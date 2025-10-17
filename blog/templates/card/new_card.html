@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block title %} Criando novo Card{% endblock %}
+{% block content %}
+<style>
+  .errorlist li {
+    color: #f33d3dff !important;
+    font-size: 0.875rem; 
+  }
+</style>
+
+<!-- Fundo quase preto; container preto ligeiramente diferente -->
+<div class="min-h-screen bg-[#050505] text-gray-200 py-12 shadow-blue-500">
+  <div class="flex justify-center items-start px-4">
+    <div class="w-full max-w-3xl bg-[#0b0b0b] rounded-lg shadow-lg p-6 border border-gray-800">
+      <h1 class="text-2xl font-semibold mb-4">Crie seu Card pessoal</h1>
+
+      <!-- Mensagens de erro -->
+      {% if messages %}
+        <div class="mb-4">
+          {% for message in messages %}
+            <div class="bg-red-600 text-white px-4 py-2 rounded mb-2">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <form method="post" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+
+        <!-- Nome + Insta -->
+        <div class="grid grid-cols-1 gap-4">
+          <div>
+            {{ form.nome.label_tag }}
+            {{ form.nome|add_class:"block w-full px-3 py-2 bg-[#0e0e0e] border border-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400/70 text-gray-100" }}
+            {{ form.nome.errors }}
+          </div>
+
+          <div>
+            {{ form.insta.label_tag }}
+            {{ form.insta|add_class:"block w-full px-3 py-2 bg-[#0e0e0e] border border-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400/70 text-gray-100" }}
+            <p class="text-sm text-gray-400 mt-1">{{ form.insta.help_text }}</p>
+            {{ form.insta.errors }}
+          </div>
+        </div>
+
+        <!-- Idade / Período / Curso -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            {{ form.idade.label_tag }}
+            {{ form.idade|add_class:"block w-full px-3 py-2 bg-[#0e0e0e] border border-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400/70 text-gray-100" }}
+            {{ form.idade.errors }}
+          </div>
+
+          <div>
+            {{ form.periodo.label_tag }}
+            {{ form.periodo|add_class:"block w-full px-3 py-2 bg-[#0e0e0e] border border-gray-800 rounded-md text-gray-100" }}
+            {{ form.periodo.errors }}
+          </div>
+
+          <div>
+            {{ form.curso.label_tag }}
+            {{ form.curso|add_class:"block w-full px-3 py-2 bg-[#0e0e0e] border border-gray-800 rounded-md text-gray-100" }}
+            {{ form.curso.errors }}
+          </div>
+        </div>
+
+        <!-- Hobbies -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Hobbies</label>
+          <div class="columns-2 md:columns-3 lg:columns-4 gap-2 space-y-1 text-gray-200">
+            {{ form.hobbies }}
+          </div>
+          <p class="text-sm text-gray-400 mt-2">{{ form.hobbies.help_text }}</p>
+          {{ form.hobbies.errors }}
+        </div>
+
+        <!-- Bio -->
+        <div>
+          {{ form.bio.label_tag }}
+          {{ form.bio|add_class:"block w-full px-3 py-2 bg-[#0e0e0e] border border-gray-800 rounded-md text-gray-100" }}
+          {{ form.bio.errors }}
+        </div>
+
+        <!-- Música favorita -->
+        <div>
+          {{ form.musica_fav.label_tag }}
+          {{ form.musica_fav|add_class:"block w-full px-3 py-2 bg-[#0e0e0e] border border-gray-800 rounded-md text-gray-100" }}
+          {{ form.musica_fav.errors }}
+        </div>
+
+        <!-- Cores e Gradiente -->
+        <div class="flex flex-col lg:flex-row lg:items-center lg:gap-6">
+          <div class="flex items-center gap-3">
+            {{ form.cor_fundo.label_tag }}
+            {{ form.cor_fundo|add_class:"block w-14 h-7 p-0 border border-gray-700 rounded" }}
+            {{ form.cor_fundo.errors }}
+          </div>
+
+          <div class="flex items-center gap-3 mt-3 lg:mt-0">
+            {{ form.cor_texto.label_tag }}
+            {{ form.cor_texto|add_class:"block w-14 h-7 p-0 border border-gray-700 rounded" }}
+            {{ form.cor_texto.errors }}
+          </div>
+
+           <div class="flex items-center gap-3 mt-3 lg:mt-0">
+            {{ form.cor_destaque.label_tag }}
+            {{ form.cor_destaque|add_class:"block w-14 h-7 p-0 border border-gray-700 rounded" }}
+            {{ form.cor_destaque.errors }}
+          </div>
+
+          <div class="flex items-center space-x-2 mt-3 lg:mt-0">
+            {{ form.gradiente }}
+            <span class="text-gray-300 text-sm">Usar gradiente no fundo (gerado a partir da cor escolhida)</span>
+            {{ form.gradiente.errors }}
+          </div>
+        </div>
+
+        <!-- Foto (upload) -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Foto de perfil</label>
+
+          <div class="flex items-center space-x-4">
+            <!-- Botão estilizado -->
+            <label for="id_foto" class="cursor-pointer px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-100 rounded-md border border-gray-700 shadow-sm transition">
+              Escolher arquivo
+            </label>
+
+            <!-- Nome do arquivo selecionado -->
+            <span id="file-name" class="text-gray-400 text-sm italic">Nenhum arquivo selecionado</span>
+          </div>
+
+          <!-- Campo real (oculto) -->
+          <input type="file" name="foto" id="id_foto" style="opacity:0;position:absolute;z-index:-1;">
+
+          <!-- Preview -->
+          <div class="mt-3">
+            <img id="foto-preview" src="#" alt="Preview" class="hidden w-32 h-32 object-cover rounded border border-gray-700 shadow-sm" />
+          </div>
+
+          {{ form.foto.errors }}
+        </div>
+
+        <!-- Botão de submit -->
+        <div class="pt-4 border-t border-gray-800">
+          <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md shadow-sm transition">
+            Salvar
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const input = document.querySelector('input[type="file"][name="foto"]');
+    const preview = document.getElementById('foto-preview');
+    const fileName = document.getElementById('file-name');
+
+    if (!input) return;
+
+    input.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) {
+        fileName.textContent = 'Nenhum arquivo selecionado';
+        preview.classList.add('hidden');
+        return;
+      }
+
+      fileName.textContent = file.name;
+      preview.src = URL.createObjectURL(file);
+      preview.classList.remove('hidden');
+    });
+  })();
+</script>
+
+{% endblock %}
