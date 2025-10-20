@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="form.css" />
+    <title>Formulário</title>
+  </head>
+  <body>
+    <div id="form-container">
+      <div class="input-box">
+        <input type="text" class="input" required />
+        <label class="label">Nome/Apelido</label>
+      </div>
+      <div class="hobbies-container">
+        <label for="custom-select">Escolha seus hobbies (4 a 7):</label>
+
+        <div class="custom-select" id="custom-select">
+          <div class="select-box" id="select-box">Selecione...</div>
+          <div class="options" id="options">
+            <label class="option-item"
+              ><input type="checkbox" value="Futebol" /><span
+                >Futebol</span
+              ></label
+            >
+            <label class="option-item"
+              ><input type="checkbox" value="Leitura" /><span
+                >Leitura</span
+              ></label
+            >
+            <label class="option-item"
+              ><input type="checkbox" value="Música" /><span
+                >Música</span
+              ></label
+            >
+            <label class="option-item"
+              ><input type="checkbox" value="Desenho" /><span
+                >Desenho</span
+              ></label
+            >
+            <label class="option-item"
+              ><input type="checkbox" value="Cozinhar" /><span
+                >Cozinhar</span
+              ></label
+            >
+            <label class="option-item"
+              ><input type="checkbox" value="Programar" /><span
+                >Programar</span
+              ></label
+            >
+            <label class="option-item"
+              ><input type="checkbox" value="Viajar" /><span
+                >Viajar</span
+              ></label
+            >
+            <label class="option-item"
+              ><input type="checkbox" value="Fotografia" /><span
+                >Fotografia</span
+              ></label
+            >
+            <label class="option-item"
+              ><input type="checkbox" value="Academia" /><span
+                >Academia</span
+              ></label
+            >
+            <label class="option-item"
+              ><input type="checkbox" value="Filmes e Séries" /><span
+                >Filmes e Séries</span
+              ></label
+            >
+          </div>
+        </div>
+
+        <div class="selected-hobbies" id="selected-hobbies"></div>
+      </div>
+    </div>
+    <script src="form.js" defer></script>
+  </body>
+</html>
