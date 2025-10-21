@@ -52,7 +52,7 @@
     <header class="w-full bg-gray-800/5 h-[50px] bg-gray-900/20 backdrop-blur-md border-b border-gray-800/50 fixed top-0 z-50">
       <div class="flex items-center h-full px-6">
           <!-- futuramente logo -->
-          <div class="w-[30px] h-[30px] bg-gray-800 rounded-full"></div>
+          <img class="w-[50px] h-[50px]" src="{% static 'img/logo.png' %}" alt="Logo" id="logo">
 
           <nav class="mx-auto space-x-8">
             <a href="{% url 'index' %}" class="text-gray-200 relative inline-block {% if request.resolver_match.url_name == 'index' %} font-bold {% endif %}">

@@ -1,6 +1,144 @@
 {% extends 'base.html' %}
 {% load widget_tweaks %}
+{% load static %}
 {% block title %} Criando novo Card{% endblock %}
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/crie-se.css' %}">
+<section id="crie-cards">
+    <!-- Seção 1 com texto principal e imagem ao lado -->
+    <div id="texto1">
+        <h1>Crie cards personalizados do seu jeito</h1>
+        <p>
+            Monte seu card do jeito que quiser, adicionando sua foto, suas
+            informações e escolhendo suas cores, e compartilhe com seus amigos
+            para que todos conheçam você de forma única e divertida !
+        </p>
+    </div>
+    <div id="img1">
+        <img src="{% static 'img/img1.png' %}" alt="imagem principal da section" />
+    </div>
+</section>
+<section>
+    <!-- Seção 2 com quadrado e textos informativos -->
+    <h1 id="titulo-info">Seu perfil, sua essência, do seu gosto</h1>
+    
+    <div id="info">
+        <!-- Seção topo -->
+        <div id="topo">
+            <div class="texto-info">
+                <h1 class="efeito">Fale sobre você</h1>
+                <p class="efeito">
+                    Crie um perfil que conte a sua história de forma única e
+                    envolvente. Compartilhe quem você é, seus interesses, hobbies e
+                    tudo o que faz você se destacar, mostrando aos outros um pouco do
+                    seu mundo e daquilo que torna sua personalidade especial e
+                    autêntica.
+                </p>
+            </div>
+            <div id="imagens-topo">
+                <img
+                id="img3"
+                class="efeito"
+                src="{% static 'img/img3.png' %}"
+                alt="imagem 1 section info"
+                />
+                <img
+                id="img2"
+                class="efeito"
+                src="{% static 'img/img2.png' %}"
+                alt="imagem 2 section info"
+                />
+            </div>
+        </div>
+        <!-- Seção baixo -->
+        <div id="baixo">
+            <div id="imagens-baixo">
+                <img
+                id="img4"
+                class="efeito"
+                src="{% static 'img/img4.png' %}"
+                alt="imagem 3 section info"
+                />
+                <img
+                id="img5"
+                class="efeito"
+                src="{% static 'img/img5.png' %}"
+                alt="imagem 4 section info"
+                />
+            </div>
+            <div class="texto-info">
+                <h1 class="efeito">Seu estilo, sua marca</h1>
+                <p class="efeito">
+                    Dê vida ao seu perfil escolhendo cores e fontes que combinem com a
+                    sua personalidade. Personalize cada detalhe de forma criativa,
+                    fazendo com que seu perfil se torne totalmente seu e transmita
+                    exatamente quem você é.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="tree-box">
+    <!--Seção 3 com 3 quadrados explicativos-->
+    <div id="div-tree">
+        <h1 id="texto-tree" class="efeito">Como funciona?</h1>
+        <img
+        id="img6"
+        class="efeito"
+        src="{% static 'img/img6.png' %}"
+        alt="imagem '?' ao lado do titulo"
+        />
+    </div>
+    <div id="conteiner-tree-box">
+        <div id="box-1" class="efeito">
+            <h1>Adicione suas informações</h1>
+            <div id="box-1-info">
+                <p>
+                    Inclua seu nome, idade, Instagram, uma foto, o curso que está
+                    fazendo e outros detalhes para deixar seu card completo e
+                    personalizado.
+                </p>
+                <img id="img7" src="{% static 'img/img7.png' %}" alt="imagem box 1" />
+            </div>
+        </div>
+        <div id="box-2" class="efeito">
+            <h1>Personalize seu card</h1>
+            <div id="box-2-info">
+                <p>
+                    Escolha cores, fontes e estilos que reflitam sua personalidade,
+                    seu gosto e seu estilo próprio, deixando cada detalhe do card com
+                    a sua cara.
+                </p>
+                <img id="img8" src="{% static 'img/img8.png' %}" alt="imagem box 2" />
+            </div>
+        </div>
+        <div id="box-3" class="efeito">
+            <h1>Veja seu card ganhar vida</h1>
+            <div id="box-3-info">
+                <p>
+                    seu card é criado em tempo real, permitindo acompanhar cada
+                    mudança enquanto você personaliza!
+                </p>
+                <img id="img9" src="{% static 'img/img9.png' %}" alt="imagem box 3" />
+            </div>
+        </div>
+    </div>
+</section>
+<section class="mb-10">
+    <!--Secao final com botoes-->
+    <div id="buttons-div">
+        <h1 id="frase-card" class="efeito">Pronto para criar o seu card?</h1>
+        <div id="buttons-card">
+            <button id="perfil-button" class="efeito">
+                <span>Ver criações</span>
+            </button>
+            <button id="crie-button" class="efeito">
+                <span>Crie seu card</span>
+            </button>
+        </div>
+    </div>
+</section>
 
+<script src="{% static 'javascript/crie-se.js' %}" defer></script>
+<script src="https://unpkg.com/scrollreveal"></script>
 {% endblock %}

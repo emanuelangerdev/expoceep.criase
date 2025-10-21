@@ -14,7 +14,7 @@ html {
 body {
   margin: 0;
   font-family: Inter, system-ui, sans-serif;
-  background-color: #050505;      /* Backgrond */
+  background-image: url('../img/background.png');     /* Backgrond */
   color: #ececec;                 /* Texto principal */
   line-height: 1.6;
 }
@@ -109,4 +109,15 @@ a {
   p {
     font-size: 10px;
   }
+}
+
+#logo {
+  pointer-events: none;
+  width: auto;
+  margin-left: 0;
+  max-width: 100%;
+  border-radius: 50px;
+  filter: drop-shadow(0 0 5px rgb(255, 255, 255))
+    drop-shadow(0 0 10px rgba(255, 255, 255, 0.6))
+    drop-shadow(0 0 20px rgba(255, 255, 255, 0.4));
 }

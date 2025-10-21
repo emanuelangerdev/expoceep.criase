@@ -1,0 +1,651 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url('../img/background.png');
+  overflow-x: hidden;
+}
+
+#crie-cards {
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  padding: 3vh 5vw;
+  margin-top: 1vh;
+  margin: 0;
+  gap: 0;
+}
+
+#texto1 {
+  position: relative;
+  color: white;
+  font-family: "Poppins", sans-serif;
+  text-shadow: 4px 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+#texto1 h1 {
+  font-size: clamp(2rem, 2.5rem, 2.6rem);
+  font-weight: 700;
+  max-width: 51rem;
+}
+
+#texto1 p {
+  font-weight: 400;
+  font-size: clamp(1.2rem, 1.4rem, 1.6rem);
+  margin-top: 1rem;
+  max-width: 49rem;
+}
+
+#img1 img {
+  pointer-events: none;
+  object-fit: contain;
+  z-index: -10;
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.1))
+    drop-shadow(0 0 40px rgba(255, 255, 255, 0.1))
+    drop-shadow(0 0 60px rgba(255, 255, 255, 0.1))
+    drop-shadow(0 0 80px rgba(255, 255, 255, 0.1));
+}
+
+#titulo-info {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 800;
+  color: white;
+  text-align: center;
+  margin-bottom: 4vh;
+  font-size: clamp(1.8rem, 2.2rem, 2.5rem);
+  text-shadow: 4px 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+#info {
+  background-color: #00000031;
+  width: 80%;
+  min-width: 320px;
+  max-width: 1600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  position: relative;
+  margin: auto;
+  border-radius: 20px;
+  border: 2px solid #ffffff;
+  padding: 4rem;
+  transition: box-shadow 0.3s ease;
+  overflow: hidden;
+}
+
+#info:hover {
+  box-shadow: 10px 4px 20px rgba(255, 255, 255, 0.7);
+}
+
+.texto-info h1 {
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 0 1px #fff, 0 0 3px #fff, 0 0 8px #fff;
+  font-size: clamp(1.5rem, 2vw + 1rem, 2.2rem);
+  max-width: 100%;
+}
+
+.texto-info p {
+  font-family: "Poppins", sans-serif;
+  color: white;
+  font-weight: 500;
+  text-shadow: 4px 4px 16px rgba(0, 0, 0, 0.3);
+  font-size: clamp(1rem, 1.2vw + 0.5rem, 1.5rem);
+  line-height: 1.6;
+  max-width: 100%;
+}
+
+#topo,
+#baixo {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+#topo {
+  margin-top: -4%;
+  flex: 1;
+  text-align: left;
+}
+
+#baixo {
+  margin-bottom: -4%;
+  flex: 1;
+  text-align: right;
+  max-width: 100%;
+}
+
+.texto-info {
+  flex: 1;
+  min-width: 300px;
+}
+
+#imagens-topo,
+#imagens-baixo {
+  position: relative;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  gap: 10px;
+}
+
+#img2,
+#img3,
+#img4,
+#img5 {
+  max-width: 50%;
+  height: auto;
+  pointer-events: none;
+  object-fit: contain;
+  flex-shrink: 1;
+}
+
+#img2 {
+  translate: 0 0;
+}
+
+#img3 {
+  max-width: 40%;
+  translate: 5% 5%;
+}
+
+#img4 {
+  translate: 5% 1%;
+}
+
+#img5 {
+  translate: -7% -8%;
+}
+
+#tree-box {
+  width: 100%;
+  padding: 2rem 1rem;
+}
+
+#div-tree {
+  justify-content: center;
+  display: flex;
+  margin-left: 10rem;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+#texto-tree {
+  color: white;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 800;
+  text-align: center;
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  text-shadow: 4px 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+#img6 {
+  height: auto;
+  max-width: 120px;
+  transform: translateY(-20px);
+}
+
+#conteiner-tree-box {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+#box-1,
+#box-2,
+#box-3 {
+  flex: 1 1 350px;
+  max-width: 500px;
+  height: 370px;
+  padding: 1.5rem;
+  background-color: #121212bb;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: transform 0.3s ease;
+}
+
+#conteiner-tree-box h1 {
+  margin-bottom: 1rem;
+  color: white;
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+  text-align: center;
+  text-shadow: 0 0 1px #fff, 0 0 3px #fff, 0 0 8px #fff;
+}
+
+#conteiner-tree-box p {
+  color: white;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: clamp(1.1rem, 2.4vw, 1.3rem);
+  line-height: 1.6;
+  text-align: left;
+  margin: 0;
+}
+
+#box-1-info,
+#box-2-info,
+#box-3-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+#box-1-info p,
+#box-2-info p,
+#box-3-info p {
+  flex: 2;
+  margin: 0;
+}
+
+#box-1-info img,
+#box-2-info img,
+#box-3-info img {
+  flex: 1;
+  max-width: 30%;
+  height: auto;
+  object-fit: contain;
+}
+
+#buttons-div {
+  margin-top: 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+#buttons-card {
+  margin-top: 4rem;
+  display: flex;
+  gap: 50px;
+  justify-content: center;
+}
+
+#frase-card {
+  font-family: "Montserrat", sans-serif;
+  color: white;
+  font-size: 35px;
+  font-weight: 800;
+  text-shadow: 4px 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+#perfil-button,
+#crie-button {
+  position: relative;
+  overflow: hidden;
+  font-weight: 500;
+  border-radius: 30px;
+  font-size: 20px;
+  border: 2px solid black;
+  cursor: pointer;
+  color: black;
+  width: 200px;
+  height: 60px;
+  background-color: white;
+  font-family: "Montserrat", sans-serif;
+  transition: all 0.3s ease;
+}
+
+#perfil-button::before,
+#crie-button::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgb(0, 0, 0);
+  transition: bottom 0.3s ease;
+  z-index: 0;
+}
+
+#perfil-button:hover::before,
+#crie-button:hover::before {
+  bottom: 0;
+}
+
+#perfil-button,
+#crie-button {
+  position: relative;
+  z-index: 1;
+}
+
+#perfil-button span,
+#crie-button span {
+  position: relative;
+  z-index: 2;
+  transition: color 0.3s ease 0.15s;
+}
+
+#perfil-button:hover span,
+#crie-button:hover span {
+  color: white;
+}
+
+footer {
+  margin-top: 8rem;
+  width: 100%;
+  max-width: 2000px;
+  margin-left: auto;
+  margin-right: auto;
+  height: 100px;
+  background-color: #121212;
+  color: white;
+  display: flex;
+  font-family: "Poppins", sans-serif;
+  font-weight: 200;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+}
+
+footer h1,
+p {
+  margin: 5px 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: white;
+}
+
+.p {
+  font-size: 10px;
+  font-weight: 400;
+}
+
+footer h1:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.efeito {
+  visibility: hidden;
+}
+
+a {
+  text-decoration: none;
+}
+
+@media (max-width: 768px) {
+  header {
+    padding: 0.5rem 0.5rem;
+    min-height: 40px;
+    max-height: 50px;
+  }
+
+  nav ul {
+    gap: 0.8rem;
+  }
+
+  nav a {
+    font-size: 0.8rem;
+    padding: 2px 5px;
+  }
+
+  #logo {
+    height: clamp(35px, 6vw, 45px);
+  }
+}
+
+@media (max-width: 992px) {
+  #crie-cards {
+    margin-top: 10%;
+    flex-direction: column;
+    text-align: center;
+    gap: 5vh;
+    padding: 6vh 5vw;
+  }
+
+  #texto1 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: static;
+  }
+
+  #texto1 h1 {
+    max-width: 85vw;
+    font-size: 18px;
+  }
+
+  #texto1 p {
+    max-width: 80vw;
+    font-size: 13px;
+  }
+
+  #img1 img {
+    margin-top: -15%;
+    max-width: 40%;
+    height: auto;
+  }
+}
+
+@media (max-width: 900px) {
+  #info {
+    width: 90%;
+    padding-top: 1.5rem;
+    padding-left: 0rem;
+    padding-right: 2rem;
+    padding-bottom: 0rem;
+  }
+
+  #titulo-info {
+    font-size: 13px;
+    text-align: center;
+    margin-bottom: 2vh;
+  }
+
+  #topo,
+  #baixo {
+    flex-direction: column;
+    gap: 30px;
+    margin: 0;
+  }
+
+  .texto-info {
+    min-width: unset;
+    width: 80%;
+    order: 1;
+  }
+
+  .texto-info h1 {
+    font-size: 15px;
+  }
+
+  .texto-info p {
+    font-size: 13px;
+  }
+
+  #imagens-topo,
+  #imagens-baixo {
+    width: 100%;
+    order: 2;
+    gap: 5px;
+  }
+  #img2,
+  #img3,
+  #img4,
+  #img5 {
+    max-width: 25%;
+    translate: 0 0;
+  }
+  #img2 {
+    translate: 30px -40px;
+  }
+
+  #img3 {
+    translate: 30px -15px;
+  }
+
+  #img4 {
+    max-width: 30%;
+    translate: -20px -40px;
+  }
+
+  #img5 {
+    max-width: 40%;
+    translate: -50px -20px;
+  }
+}
+
+@media (max-width: 768px) {
+  #div-tree {
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 0px;
+  }
+
+  #texto-tree {
+    font-size: 18px;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+  }
+
+  #img6 {
+    max-width: 80px;
+    transform: none;
+    display: inline-block;
+    margin: 0;
+  }
+
+  #conteiner-tree-box {
+    gap: 1.5rem;
+  }
+
+  #box-1,
+  #box-2,
+  #box-3 {
+    height: auto;
+    padding: 1.2rem;
+  }
+
+  #box-1-info,
+  #box-2-info,
+  #box-3-info {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
+  }
+
+  #conteiner-tree-box h1 {
+    font-size: 15px;
+  }
+
+  #box-1-info p,
+  #box-2-info p,
+  #box-3-info p {
+    text-align: center;
+    font-size: 13px;
+  }
+
+  #box-1-info img,
+  #box-2-info img,
+  #box-3-info img {
+    max-width: 35%;
+    order: -1;
+  }
+}
+@media (max-width: 768px) {
+  #buttons-div {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  #buttons-card {
+    margin-top: 2rem;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #frase-card {
+    font-size: 18px;
+    width: 80%;
+  }
+
+  #perfil-button,
+  #crie-button {
+    width: 140px;
+    height: 40px;
+    font-size: 13px;
+    border-radius: 25px;
+  }
+
+  #perfil-button:hover,
+  #crie-button:hover {
+    color: rgb(0, 89, 255);
+    border: 2px solid rgb(0, 89, 255);
+  }
+
+  #perfil-button::before,
+  #crie-button::before {
+    background: rgb(255, 255, 255);
+  }
+
+  #perfil-button:hover::before,
+  #crie-button:hover::before {
+    bottom: 0;
+  }
+
+  #perfil-button,
+  #crie-button {
+    position: relative;
+    z-index: 1;
+  }
+
+  #perfil-button span,
+  #crie-button span {
+    position: relative;
+    z-index: 2;
+    transition: color 0.3s ease 0.15s;
+  }
+
+  #perfil-button:hover span,
+  #crie-button:hover span {
+    color: blue;
+  }
+}
+
+@media (max-width: 768px) {
+  footer {
+    margin-top: 3rem;
+  }
+  footer h1,
+  p {
+    font-size: 10px;
+  }
+}
