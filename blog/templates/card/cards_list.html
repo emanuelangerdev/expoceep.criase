@@ -24,7 +24,6 @@
           <p class="text-sm mb-2" style="color: {{ card.cor_texto }}; opacity: 80%;">@{{ card.insta }}</p>
           {% endif %}
           
-          <p class="text-sm mb-3" style="color: {{ card.cor_texto }}; max-height:4.5rem; overflow:hidden;">{{ card.bio }}</p>
 
           <!-- Hobbies centralizados com cor de destaque -->
           <div class="flex flex-wrap items-center justify-center gap-2 my-4">
@@ -38,6 +37,8 @@
             </span>
             {% endfor %}
           </div>
+
+          <p class="text-sm mb-3" style="color: {{ card.cor_texto }}; max-height:4.5rem; overflow:hidden;">{{ card.bio }}</p>
         </div>
         
         <!-- Seção fixa no rodapé do card -->
@@ -49,7 +50,7 @@
             id="btn-comentarios{{ card.id }}" 
             data-card-id="{{ card.id }}"
             data-card-nome="{{ card.nome }}" 
-            class="btn-comentarios text-white ml-2 bg-gray-600 px-2 py-1 rounded"
+            class="btn-comentarios text-white ml-2 bg-gray-600 px-2 py-1 rounded transition-300 hover:bg-gray-700 hover:shadow"
           >
             Comentários
           </button>
