@@ -41,8 +41,11 @@ class Card(models.Model):
     periodo = models.CharField(max_length=2, choices=PERIODO_CHOICE, null=True, blank=True)
     curso = models.ForeignKey(Curso, on_delete=models.CASCADE, null=True, blank=True)
     
+    def __str__(self):
+        return f"{self.nome} ({self.insta if self.insta else ''})"
 
 class Comentario(models.Model):
     card = models.ForeignKey(Card, on_delete=models.CASCADE, related_name="comentarios")
+    user = models.CharField(max_length=50, default="Anônimo")
     conteudo = models.TextField()
     data = models.DateTimeField(auto_now_add=True)

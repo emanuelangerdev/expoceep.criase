@@ -4,60 +4,237 @@
 
 <div class="mt-20 p-8 max-w-7xl mx-auto mb-12 pb-8 rounded-lg bg-[#121212]">
   <h1 class="text-2xl font-semibold text-gray-100 mb-6">Cards</h1>
-
+  
   {% if cards %}
-    <div class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-      {% for card in cards %}
-        <article class="bg-[{{ card.cor_fundo }}]/20 border h-[440px] border-[{{ card.cor_destaque }}] rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition flex flex-col">
-          {% if card.foto %}
-              <img src="{{ card.foto.url }}" alt="{{ card.nome|default:'Card' }}" class="w-[90%] mx-auto h-[170px] rounded object-cover mt-4">
-          {% else %}
-              <div class="w-[90%] mx-auto mt-4 rounded h-[170px] bg-black/30 flex items-center justify-center text-gray-400">
-                  <span><i class="bi bi-person text-7xl text-[{{ card.cor_fundo }}]/50"></i></span>
-              </div>
+  <div class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    {% for card in cards %}
+    <article class="bg-[{{ card.cor_fundo }}]/20 border h-[440px] border-[{{ card.cor_destaque }}] rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition flex flex-col">
+      {% if card.foto %}
+      <img src="{{ card.foto.url }}" alt="{{ card.nome|default:'Card' }}" class="w-[90%] mx-auto h-[170px] rounded object-cover mt-4">
+      {% else %}
+      <div class="w-[90%] mx-auto mt-4 rounded h-[170px] bg-black/30 flex items-center justify-center text-gray-400">
+        <span><i class="bi bi-person text-7xl text-[{{ card.cor_fundo }}]/50"></i></span>
+      </div>
+      {% endif %}
+      
+      <div class="p-4 flex flex-col flex-grow">
+        <div class="flex-grow">
+          <h2 class="font-semibold text-lg mb-1 truncate" style="color: {{ card.cor_destaque }};">{{ card.nome }}</h2>
+          {% if card.insta %}
+          <p class="text-sm mb-2" style="color: {{ card.cor_texto }}; opacity: 80%;">@{{ card.insta }}</p>
           {% endif %}
+          
+          <p class="text-sm mb-3" style="color: {{ card.cor_texto }}; max-height:4.5rem; overflow:hidden;">{{ card.bio }}</p>
 
-          <div class="p-4 flex flex-col flex-grow">
-              <div class="flex-grow">
-                  <h2 class="font-semibold text-lg mb-1 truncate" style="color: {{ card.cor_destaque }};">{{ card.nome }}</h2>
-                  {% if card.insta %}
-                      <p class="text-sm mb-2" style="color: {{ card.cor_texto }}; opacity: 80%;">@{{ card.insta }}</p>
-                  {% endif %}
-
-                  <!-- Hobbies centralizados com cor de destaque -->
-                  <div class="flex flex-wrap items-center justify-center gap-2 my-4">
-                      {% for hobby in card.hobbies.all %}
-                          <span class="text-xs font-medium px-3 py-1 rounded-full" style="background-color: {{ card.cor_destaque }}; color: black">
-                              {{ hobby }}
-                          </span>
-                      {% empty %}
-                          <span class="text-xs font-medium px-3 py-1 rounded-full" style="background-color: {{ card.cor_destaque }}; color: black">
-                              Nenhum hobby
-                          </span>
-                      {% endfor %}
-                  </div>
-
-                  <p class="text-sm mb-3" style="color: {{ card.cor_texto }}; max-height:4.5rem; overflow:hidden;">{{ card.bio }}</p>
-              </div>
-
-              <!-- Seção fixa no rodapé do card -->
-              <div class="flex items-center text-sm mt-auto pt-4 border-t border-gray-300/30">
-                  <button href="#" class="text-white bg-blue-600 px-2 py-1 rounded hover:underline">
-                    Ver
-                  </button>
-                  <button id="btn-comentarios{{ card.id }}" data-card-id="{{ card.id }}" class="btn-comentarios text-white ml-2 bg-gray-600 px-2 py-1 rounded hover:underline">
-                    Comentários
-                  </button>
-                  <span class="text-red-500 text-lg ml-auto">
-                    {{ card.curtidas|default:0 }} ♥
-                  </span>
-              </div>
+          <!-- Hobbies centralizados com cor de destaque -->
+          <div class="flex flex-wrap items-center justify-center gap-2 my-4">
+            {% for hobby in card.hobbies.all %}
+            <span class="text-xs font-medium px-3 py-1 rounded-full" style="background-color: {{ card.cor_destaque }}; color: black">
+              {{ hobby }}
+            </span>
+            {% empty %}
+            <span class="text-xs font-medium px-3 py-1 rounded-full" style="background-color: {{ card.cor_destaque }}; color: black">
+              Nenhum hobby
+            </span>
+            {% endfor %}
           </div>
-      </article>
-      {% endfor %}
-    </div>
+        </div>
+        
+        <!-- Seção fixa no rodapé do card -->
+        <div class="flex items-center text-sm mt-auto pt-4 border-t border-gray-300/30">
+          <button href="#" class="text-white bg-blue-600/80 px-2 py-1 rounded transition-300 hover:bg-blue-900 hover:shadow">
+            Ver
+          </button>
+          <button 
+            id="btn-comentarios{{ card.id }}" 
+            data-card-id="{{ card.id }}"
+            data-card-nome="{{ card.nome }}" 
+            class="btn-comentarios text-white ml-2 bg-gray-600 px-2 py-1 rounded"
+          >
+            Comentários
+          </button>
+          <span class="text-red-500 text-lg ml-auto px-2 rounded bg-black/20 border border-white/10">
+            {{ card.curtidas|default:0 }} ♥
+          </span>
+        </div>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
   {% else %}
-    <p class="text-gray-400">Nenhum card criado ainda.</p>
+  <p class="text-gray-400">Nenhum card criado ainda.</p>
   {% endif %}
 </div>
+
+<!-- Painel de Comentários - Corrigido -->
+<div class="fixed bottom-0 right-0 w-[400px] h-screen bg-black/90 p-5 rounded-l-[10px] shadow-[inset_-4px_0_8px_rgba(0,0,0,0.3)] transform translate-x-full transition-transform duration-500 ease-in-out flex flex-col z-[2000] coments">
+  <!-- Título dinâmico -->
+  <div class="mb-4">
+    <h2 class="text-white text-xl font-semibold" id="titulo-comentarios">
+      Comentários de <span id="nome-card-comentarios">Nenhum card selecionado</span>
+    </h2>
+    <p class="text-gray-400 text-sm" id="insta-card-comentarios"></p>
+    <input type="hidden" id="card-id-atual" value="">
+  </div>
+  
+  <div class="flex-1 overflow-y-auto mb-3 h-[20vh] text-[#dad7d7] space-y-4 comentarios-lista">
+    <!-- Lista de comentários será inserida aqui --> 
+  </div> 
+  
+  <input type="text" placeholder="Nome de Exibição" class="bg-[#3d3d3d] h-[5vh] caret-[#dad7d7] rounded-[10px] mb-[2vh] border-none px-4 focus:outline-none focus:border focus:border-[#dad7d7] nome_exibicao">
+  
+  <input type="text" placeholder="Comentário" class="bg-[#3d3d3d] h-[5vh] caret-[#dad7d7] rounded-[10px] mb-[2vh] border-none px-4 focus:outline-none focus:border focus:border-[#dad7d7] comentario">
+  
+  <button class="h-[7vh] rounded-[15px] border border-[#303030] bg-[#004a8a] text-white font-semibutext-white font-semibold outline-none hover:bg-[#00427c] active:bg-[#00427c] active:scale-90 transition-transform publicar">
+    Publicar Comentário
+  </button>
+</div>
+  
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const painel = document.querySelector('.coments');
+    const elementoNome = document.getElementById('nome-card-comentarios');
+    const elementoInsta = document.getElementById('insta-card-comentarios');
+    const elementoCardId = document.getElementById('card-id-atual');
+    const tituloComentarios = document.getElementById('titulo-comentarios');
+    
+    // Event listeners para todos os botões de comentários
+    document.querySelectorAll('.btn-comentarios').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            
+            // Pega todos os dados do card diretamente dos data attributes
+            const cardId = btn.dataset.cardId;
+            const cardNome = btn.dataset.cardNome;
+            const cardInsta = btn.dataset.cardInsta;
+            const cardCorDestaque = btn.dataset.cardCorDestaque;
+            
+            console.log('Abrindo comentários:', {
+                id: cardId,
+                nome: cardNome,
+                insta: cardInsta,
+                cor: cardCorDestaque
+            });
+            
+            // Atualiza a interface com os dados do card
+            atualizarPainelComentarios(cardId, cardNome, cardInsta, cardCorDestaque);
+            
+            // Mostra o painel
+            painel.classList.add('show');
+            
+            // Carrega os comentários específicos
+            carregarComentarios(cardId);
+        });
+    });
+    
+    function atualizarPainelComentarios(cardId, nome, insta, corDestaque) {
+        // Atualiza o nome do card
+        elementoNome.textContent = nome;
+        
+        // Atualiza o ID do card atual (útil para publicar comentários)
+        elementoCardId.value = cardId;
+        
+        // Opcional: aplicar a cor de destaque ao título
+        tituloComentarios.style.color = corDestaque;
+    }
+    
+    function carregarComentarios(cardId) {
+        console.log('Carregando comentários do card ID:', cardId);
+        
+        // Aqui você faria uma requisição AJAX para buscar os comentários
+        // Exemplo:
+        /*
+        fetch(`/api/comentarios/${cardId}/`)
+            .then(response => response.json())
+            .then(comentarios => {
+                const lista = document.querySelector('.comentarios-lista');
+                lista.innerHTML = ''; // Limpa lista anterior
+                
+                comentarios.forEach(comentario => {
+                    lista.innerHTML += `
+                        <div class="comentario-item p-3 bg-[#3d3d3d] rounded">
+                            <strong class="text-white">${comentario.autor}:</strong>
+                            <p class="text-gray-300">${comentario.texto}</p>
+                        </div>
+                    `;
+                });
+            })
+            .catch(error => console.error('Erro ao carregar comentários:', error));
+        */
+    }
+    
+    // Lógica para publicar comentário (exemplo)
+    document.querySelector('.publicar').addEventListener('click', function() {
+        const cardId = elementoCardId.value;
+        const nomeExibicao = document.querySelector('.nome_exibicao').value;
+        const comentarioTexto = document.querySelector('.comentario').value;
+        
+        if (!cardId) {
+            alert('Nenhum card selecionado!');
+            return;
+        }
+        
+        if (!nomeExibicao || !comentarioTexto) {
+            alert('Preencha nome e comentário!');
+            return;
+        }
+        
+        console.log('Publicando comentário:', {
+            cardId: cardId,
+            autor: nomeExibicao,
+            texto: comentarioTexto
+        });
+        
+        // Aqui você faria a requisição para salvar o comentário
+        /*
+        fetch('/api/comentarios/publicar/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify({
+                card: cardId,
+                autor: nomeExibicao,
+                texto: comentarioTexto
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Limpa os campos
+                document.querySelector('.nome_exibicao').value = '';
+                document.querySelector('.comentario').value = '';
+                // Recarrega os comentários
+                carregarComentarios(cardId);
+            }
+        });
+        */
+    });
+    
+    // Fecha o painel se clicar fora
+    document.addEventListener('click', function(event) {
+        if (painel.classList.contains('show') && 
+            !painel.contains(event.target) && 
+            !event.target.classList.contains('btn-comentarios')) {
+            painel.classList.remove('show');
+        }
+    });
+    
+    // CSS para mostrar o painel
+    const style = document.createElement('style');
+    style.textContent = `
+        .coments.show {
+            transform: translateX(0) !important;
+        }
+    `;
+    document.head.appendChild(style);
+});
+
+// Função auxiliar para pegar o token CSRF (se necessário)
+function getCSRFToken() {
+    return document.querySelector('[name=csrfmiddlewaretoken]').value;
+}
+</script>
+  
 {% endblock %}
