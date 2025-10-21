@@ -2,45 +2,58 @@
 {% block title %} Lista de Cards {% endblock %}
 {% block content %}
 
-<div class="pt-20 px-4 max-w-7xl mx-auto mb-12">
+<div class="mt-20 p-8 max-w-7xl mx-auto mb-12 pb-8 rounded-lg bg-[#121212]">
   <h1 class="text-2xl font-semibold text-gray-100 mb-6">Cards</h1>
 
   {% if cards %}
     <div class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
       {% for card in cards %}
-        <article class="bg-[{{ card.cor_fundo }}]/20 border border-[{{ card.cor_destaque }}] rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition">
+        <article class="bg-[{{ card.cor_fundo }}]/20 border h-[440px] border-[{{ card.cor_destaque }}] rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition flex flex-col">
           {% if card.foto %}
-            <img src="{{ card.foto.url }}" alt="{{ card.nome|default:'Card' }}" class="w-[90%] mx-auto h-[170px] rounded object-cover mt-4">
+              <img src="{{ card.foto.url }}" alt="{{ card.nome|default:'Card' }}" class="w-[90%] mx-auto h-[170px] rounded object-cover mt-4">
           {% else %}
-            <div class="w-[90%] mx-auto mt-4 rounded h-[170px] bg-black/30 flex items-center justify-center text-gray-400">
-                <span><i class="bi bi-person text-7xl text-[{{ card.cor_fundo }}]/50"></i></span>
-            </div>
+              <div class="w-[90%] mx-auto mt-4 rounded h-[170px] bg-black/30 flex items-center justify-center text-gray-400">
+                  <span><i class="bi bi-person text-7xl text-[{{ card.cor_fundo }}]/50"></i></span>
+              </div>
           {% endif %}
 
-          <div class="p-4">
-            <h2 class="font-semibold text-lg mb-1 truncate " style="color: {{ card.cor_destaque }};">{{ card.nome }}</h2>
-            {% if card.insta %}
-              <p class="text-sm mb-2" style="color: {{ card.cor_texto }}; opacity: 80%;">@{{ card.insta }}</p>
-            {% endif %}
-            <p class="text-sm mb-3" style="color: {{ card.cor_texto }}; max-height:4.5rem; overflow:hidden;">{{ card.bio }}</p>
+          <div class="p-4 flex flex-col flex-grow">
+              <div class="flex-grow">
+                  <h2 class="font-semibold text-lg mb-1 truncate" style="color: {{ card.cor_destaque }};">{{ card.nome }}</h2>
+                  {% if card.insta %}
+                      <p class="text-sm mb-2" style="color: {{ card.cor_texto }}; opacity: 80%;">@{{ card.insta }}</p>
+                  {% endif %}
 
-           <!-- Hobbies centralizados com cor de destaque -->
-         <div class="flex flex-wrap items-center justify-center gap-2 my-4">
-             {% for hobby in card.hobbies.all %}
-                <span class="text-xs font-medium px-3 py-1 rounded-full" style="background-color: {{ card.cor_destaque }}; color: black">
-                  {{ hobby }}
-                </span>
-              {% empty %}
-                <!-- opcional: show nothing or a small placeholder -->
-              {% endfor %}
-            </div>
+                  <!-- Hobbies centralizados com cor de destaque -->
+                  <div class="flex flex-wrap items-center justify-center gap-2 my-4">
+                      {% for hobby in card.hobbies.all %}
+                          <span class="text-xs font-medium px-3 py-1 rounded-full" style="background-color: {{ card.cor_destaque }}; color: black">
+                              {{ hobby }}
+                          </span>
+                      {% empty %}
+                          <span class="text-xs font-medium px-3 py-1 rounded-full" style="background-color: {{ card.cor_destaque }}; color: black">
+                              Nenhum hobby
+                          </span>
+                      {% endfor %}
+                  </div>
 
-            <div class="flex items-center justify-between text-sm">
-              <a href="#" class="text-indigo-400 hover:underline">Ver</a>
-              <span class="text-gray-400">{{ card.curtidas|default:0 }} ♥</span>
-            </div>
+                  <p class="text-sm mb-3" style="color: {{ card.cor_texto }}; max-height:4.5rem; overflow:hidden;">{{ card.bio }}</p>
+              </div>
+
+              <!-- Seção fixa no rodapé do card -->
+              <div class="flex items-center text-sm mt-auto pt-4 border-t border-gray-300/30">
+                  <button href="#" class="text-white bg-blue-600 px-2 py-1 rounded hover:underline">
+                    Ver
+                  </button>
+                  <button id="btn-comentarios{{ card.id }}" data-card-id="{{ card.id }}" class="btn-comentarios text-white ml-2 bg-gray-600 px-2 py-1 rounded hover:underline">
+                    Comentários
+                  </button>
+                  <span class="text-red-500 text-lg ml-auto">
+                    {{ card.curtidas|default:0 }} ♥
+                  </span>
+              </div>
           </div>
-        </article>
+      </article>
       {% endfor %}
     </div>
   {% else %}
