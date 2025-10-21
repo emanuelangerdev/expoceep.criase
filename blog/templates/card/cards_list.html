@@ -68,29 +68,38 @@
 </div>
 
 <!-- Painel de Comentários - Corrigido -->
-<div class="fixed bottom-0 right-0 w-[400px] h-screen bg-black/90 p-5 rounded-l-[10px] shadow-[inset_-4px_0_8px_rgba(0,0,0,0.3)] transform translate-x-full transition-transform duration-500 ease-in-out flex flex-col z-[2000] coments">
+<!-- Painel de Comentários - Responsivo -->
+<div class="fixed bottom-0 left-0 md:right-0 md:left-auto w-full md:w-[400px] h-[65%] md:h-screen bg-black/90 p-5 rounded-t-[10px] md:rounded-l-[10px] md:rounded-none shadow-[0_-4px_8px_rgba(0,0,0,0.1)] md:shadow-[inset_-4px_0_8px_rgba(0,0,0,0.3)] transform translate-y-full md:translate-y-0 md:translate-x-full transition-transform duration-500 ease-in-out flex flex-col z-[2000] coments">
+
   <!-- Título dinâmico -->
-  <div class="mb-4">
+  <div class="mb-4 text-center md:text-left">
     <h2 class="text-white text-xl font-semibold" id="titulo-comentarios">
       Comentários de <span id="nome-card-comentarios">Nenhum card selecionado</span>
     </h2>
     <p class="text-gray-400 text-sm" id="insta-card-comentarios"></p>
     <input type="hidden" id="card-id-atual" value="">
   </div>
-  
-  <div class="flex-1 overflow-y-auto mb-3 h-[20vh] text-[#dad7d7] space-y-4 comentarios-lista">
-    <!-- Lista de comentários será inserida aqui --> 
-  </div> 
-  
-  <input type="text" placeholder="Nome de Exibição" class="bg-[#3d3d3d] h-[5vh] caret-[#dad7d7] rounded-[10px] mb-[2vh] border-none px-4 focus:outline-none focus:border focus:border-[#dad7d7] nome_exibicao">
-  
-  <input type="text" placeholder="Comentário" class="bg-[#3d3d3d] h-[5vh] caret-[#dad7d7] rounded-[10px] mb-[2vh] border-none px-4 focus:outline-none focus:border focus:border-[#dad7d7] comentario">
-  
-  <button class="h-[7vh] rounded-[15px] border border-[#303030] bg-[#004a8a] text-white font-semibutext-white font-semibold outline-none hover:bg-[#00427c] active:bg-[#00427c] active:scale-90 transition-transform publicar">
+
+  <!-- Lista de comentários -->
+  <div class="flex-1 overflow-y-auto mb-3 text-[#dad7d7] space-y-4 comentarios-lista text-sm md:text-base">
+    <!-- Comentários serão inseridos aqui -->
+  </div>
+
+  <!-- Nome -->
+  <input type="text" placeholder="Nome de Exibição"
+    class="bg-[#3d3d3d] h-[5vh] caret-[#dad7d7] rounded-[10px] mb-[2vh] border-none px-4 focus:outline-none focus:border focus:border-[#dad7d7] nome_exibicao w-[90%] mx-auto md:mx-0" />
+
+  <!-- Comentário -->
+  <input type="text" placeholder="Comentário"
+    class="bg-[#3d3d3d] h-[5vh] caret-[#dad7d7] rounded-[10px] mb-[2vh] border-none px-4 focus:outline-none focus:border focus:border-[#dad7d7] comentario w-[90%] mx-auto md:mx-0" />
+
+  <!-- Botão -->
+  <button
+    class="h-[7vh] w-[90%] md:w-auto mx-auto md:mx-0 rounded-[15px] border border-[#303030] bg-[#004a8a] text-white font-semibold outline-none hover:bg-[#00427c] active:bg-[#00427c] active:scale-90 transition-transform publicar">
     Publicar Comentário
   </button>
 </div>
-  
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const painel = document.querySelector('.coments');
