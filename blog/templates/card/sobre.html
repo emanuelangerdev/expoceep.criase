@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Sobre{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/sobre.css' %}">
+<section id="container">
+  <h1 id="sobre">Sobre</h1>
+  <p id="texto">
+    A Crie-se é um projeto escolar que busca criar uma espécie de rede
+    social local, permitindo que usuários montem cards personalizados com
+    informações como nome, interesses, biografia e etc. Além disso, é
+    possível customizar as cores dos cards, estimulando a criatividade e a
+    identidade de cada pessoa. O projeto tem como público-alvo os alunos e
+    os visitantes da feira, sendo uma oportunidade de interação e troca de
+    experiências. O diferencial do Crie-se está na liberdade criativa que
+    oferece, possibilitando que cada usuário crie um card único e também
+    conheça os cards de outras pessoas, promovendo conexão e engajamento.
+  </p>
+</section>
+{% endblock %}

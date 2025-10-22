@@ -19,6 +19,10 @@ body {
   line-height: 1.6;
 }
 
+.Poppins {
+  font-family: "poppins", sans-serif;
+}
+
 a {
   text-decoration: none
 }

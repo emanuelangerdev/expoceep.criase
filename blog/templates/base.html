@@ -55,13 +55,13 @@
           <img class="w-[50px] h-[50px]" src="{% static 'img/logo.png' %}" alt="Logo" id="logo">
 
           <nav class="mx-auto space-x-8">
-            <a href="{% url 'index' %}" class="text-gray-200 relative inline-block {% if request.resolver_match.url_name == 'index' %} font-bold {% endif %}">
+            <a href="{% url 'index' %}" class="Poppins text-gray-200 relative inline-block {% if request.resolver_match.url_name == 'index' %} font-semibold {% endif %}">
               Home
             </a>
-            <a href="{% url 'new_card' %}" class="text-gray-200 relative inline-block {% if request.resolver_match.url_name == 'new_card' %} font-bold {% endif %}">
+            <a href="{% url 'new_card' %}" class="Poppins text-gray-200 relative inline-block {% if request.resolver_match.url_name == 'new_card' %} font-semibold {% endif %}">
               Criar
             </a>
-            <a href="{% url 'cards_list' %}" class="text-gray-200 relative inline-block {% if request.resolver_match.url_name == 'cards_list' %} font-bold {% endif %}">
+            <a href="{% url 'cards_list' %}" class="Poppins text-gray-200 relative inline-block {% if request.resolver_match.url_name == 'cards_list' %} font-semibold {% endif %}">
               Cards
             </a>
           </nav>
@@ -91,10 +91,10 @@
     <!-- Footer do Site -->
     <footer class="mt-auto">
       <div class="footer-content">
-        <a href="/ceep/Expoceep/sobre/sobre.html">
+        <a href="">
           <h1>Sobre</h1>
         </a>
-        <a href="/ceep/Expoceep/informacoes/informacoes.html">
+        <a href="">
           <h1>Informações</h1>
         </a>
       </div>
