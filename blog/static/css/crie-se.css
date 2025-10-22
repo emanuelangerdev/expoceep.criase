@@ -433,16 +433,19 @@ a {
   }
 
   #texto1 p {
-    max-width: 80vw;
+    max-width: 81vw;
+    text-align: start;
     font-size: 13px;
   }
 
-  #img1 img {
-    margin-top: -15%;
-    margin-left: 50%;
-    max-width: 40%;
-    height: auto;
-  }
+#img1 img {
+  margin-top: -15%;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 40%;
+  height: auto;
+}
 }
 
 @media (max-width: 900px) {

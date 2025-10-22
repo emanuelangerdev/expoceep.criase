@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Informações{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/informacoes.css' %}">
+
+<section id="container">
+  <h1 id="sobre">Informações</h1>
+  <p id="texto">
+    Nome do projeto: Crie-se <br>
+    Instituição: CEEP – 2º ano C de Desenvolvimento de Sistemas <br>
+    Integrantes: Miguel Pieri Helmann → Criação da página inicial <br>
+    Gustavo Dambros Dias de Souza → Página de cards <br>
+    Emanuel Garcia Langer → Formulário <br>
+    Tecnologias utilizadas: HTML, CSS, JavaScript, Python (Django) e SQL <br>
+    Duração: 2 meses <br>
+    Etapas: Projeto dividido em 3 partes, cada integrante responsável por uma parte específica <br>
+    Apresentação: O site será apresentado em uma exposição da escola aberta ao público.
+  </p>
+</section>
+{% endblock %}

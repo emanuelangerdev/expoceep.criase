@@ -2,6 +2,8 @@
 {% load widget_tweaks %}
 {% block title %} Criando novo Card{% endblock %}
 {% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/form.css' %}">
 <style>
   .errorlist li {
     color: #f33d3dff !important;
@@ -13,7 +15,7 @@
 <div class="min-h-screen text-gray-200 py-12 shadow-blue-500">
   <div class="flex justify-center items-start px-4">
     <div class="w-full max-w-3xl bg-[#0b0b0b]/90 rounded-lg shadow-lg p-6 border border-gray-800">
-      <h1 class="text-2xl font-semibold mb-4 meu-titulo">Crie seu Card pessoal</h1>
+      <h1 class="Poppins text-2xl font-semibold mb-4 meu-titulo">Crie seu Card pessoal</h1>
 
       <!-- Mensagens de erro -->
       {% if messages %}
@@ -31,40 +33,63 @@
 
         <!-- Nome + Insta -->
         <div class="grid grid-cols-1 gap-4">
-          <div>
-            {{ form.nome.label_tag }}
-            {{ form.nome|add_class:"block w-full px-3 py-2 bg-[#0e0e0e] border border-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400/70 text-gray-100" }}
-            {{ form.nome.errors }}
-          </div>
+<div class="relative">
+    {{ form.nome|add_class:"peer block w-full pl-4 pr-3 pt-4 pb-3 bg-[#0e0e0e] border border-gray-500/50 rounded-md focus:outline-none focus:border-blue-500 focus:ring-0 text-gray-100 placeholder-transparent required"|attr:"placeholder:." }}
+    
+    <label for="{{ form.nome.id_for_label }}" class="
+        absolute left-3 top-1/2 -translate-y-1/2 
+        text-white-400 pointer-events-none 
+        transition-all duration-200 
+        bg-[#0e0e0e] px-1 
+        
+        peer-focus:-top-3 peer-focus:text-sm peer-focus:-translate-y-0 peer-focus:text-blue-500
+        peer-valid:-top-2 peer-valid:text-sm peer-valid:-translate-y-0
+    ">
+        Nome/Apelido 
+    </label>
+    {{ form.nome.errors }}
+</div>
 
           <div>
-            {{ form.insta.label_tag }}
-            {{ form.insta|add_class:"block w-full px-3 py-2 bg-[#0e0e0e] border border-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400/70 text-gray-100" }}
-            <p class="text-sm text-gray-400 mt-1">{{ form.insta.help_text }}</p>
-            {{ form.insta.errors }}
+ <div class="relative">
+    {{ form.insta|add_class:"peer block w-full pl-4 pr-3 pt-4 pb-3 bg-[#0e0e0e] border border-gray-500/50 rounded-md focus:outline-none focus:border-blue-500 focus:ring-0 text-gray-100 placeholder-transparent required"|attr:"placeholder:." }}
+    
+    <label for="{{ form.insta.id_for_label }}" class="
+        absolute left-3 top-1/2 -translate-y-1/2 
+        text-white-400 pointer-events-none 
+        transition-all duration-200 
+        bg-[#0e0e0e] px-1 
+        
+        peer-focus:-top-3 peer-focus:text-sm peer-focus:-translate-y-0 peer-focus:text-blue-500
+        peer-valid:-top-2 peer-valid:text-sm peer-valid:-translate-y-0
+    ">
+        Instagram 
+    </label>
+    {{ form.insta.errors }}
+</div>
           </div>
         </div>
 
         <!-- Idade / Período / Curso -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            {{ form.idade.label_tag }}
-            {{ form.idade|add_class:"block w-full px-3 py-2 bg-[#0e0e0e] border border-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400/70 text-gray-100" }}
-            {{ form.idade.errors }}
-          </div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div>
+      {{ form.idade.label_tag }}
+      {{ form.idade|add_class:"block w-full px-3 py-2 bg-[#0e0e0e] border border-gray-800 rounded-md focus:outline-none focus:ring-0 focus:border-blue-500 text-gray-100" }}
+      {{ form.idade.errors }}
+    </div>
 
-          <div>
-            {{ form.periodo.label_tag }}
-            {{ form.periodo|add_class:"block w-full px-3 py-2 bg-[#0e0e0e] border border-gray-800 rounded-md text-gray-100" }}
-            {{ form.periodo.errors }}
-          </div>
+    <div>
+      {{ form.periodo.label_tag }}
+      {{ form.periodo|add_class:"block w-full px-3 py-2 bg-[#0e0e0e] border border-gray-800 rounded-md text-gray-100" }}
+      {{ form.periodo.errors }}
+    </div>
 
-          <div>
-            {{ form.curso.label_tag }}
-            {{ form.curso|add_class:"block w-full px-3 py-2 bg-[#0e0e0e] border border-gray-800 rounded-md text-gray-100" }}
-            {{ form.curso.errors }}
-          </div>
-        </div>
+    <div>
+      {{ form.curso.label_tag }}
+      {{ form.curso|add_class:"block w-full px-3 py-2 bg-[#0e0e0e] border border-gray-800 rounded-md text-gray-100" }}
+      {{ form.curso.errors }}
+    </div>
+</div>
 
         <!-- Hobbies -->
         <div>
@@ -77,18 +102,39 @@
         </div>
 
         <!-- Bio -->
-        <div>
-          {{ form.bio.label_tag }}
-          {{ form.bio|add_class:"block w-full px-3 py-2 bg-[#0e0e0e] border border-gray-800 rounded-md text-gray-100" }}
-          {{ form.bio.errors }}
-        </div>
+<div class="relative">
+ {{ form.bio|add_class:"peer block w-full pl-4 pr-3 pt-4 pb-3 bg-[#0e0e0e]/90 border border-gray-500/50 rounded-md focus:outline-none focus:border-blue-500 focus:ring-0 text-gray-100 placeholder-transparent required"|attr:"placeholder:." }}
+ 
+ <label for="{{ form.bio.id_for_label }}" class="
+ absolute left-3 top-4 -translate-y-1/2 
+ text-white-400 pointer-events-none 
+ transition-all duration-200 
+ bg-[#0e0e0e] px-1 
+ peer-focus:-top-3 peer-focus:text-sm peer-focus:-translate-y-0 peer-focus:text-blue-500
+ peer-valid:-top-2 peer-valid:text-sm peer-valid:-translate-y-0
+ ">
+ Bio
+ </label>
+ {{ form.bio.errors }}
+</div>
 
         <!-- Música favorita -->
-        <div>
-          {{ form.musica_fav.label_tag }}
-          {{ form.musica_fav|add_class:"block w-full px-3 py-2 bg-[#0e0e0e] border border-gray-800 rounded-md text-gray-100" }}
-          {{ form.musica_fav.errors }}
-        </div>
+<div class="relative">
+    {{ form.musica_fav|add_class:"peer block w-full pl-4 pr-3 pt-4 pb-3 bg-[#0e0e0e]/90 border border-gray-500/50 rounded-md focus:outline-none focus:border-blue-500 focus:ring-0 text-gray-100 placeholder-transparent required"|attr:"placeholder:." }}
+    
+    <label for="{{ form.musica_fav.id_for_label }}" class="
+        absolute left-3 top-1/2 -translate-y-1/2 
+        text-white-400 pointer-events-none 
+        transition-all duration-200 
+        bg-[#0e0e0e] px-1 
+        
+        peer-focus:-top-3 peer-focus:text-sm peer-focus:-translate-y-0 peer-focus:text-blue-500
+        peer-valid:-top-2 peer-valid:text-sm peer-valid:-translate-y-0
+    ">
+        Música favorita
+    </label>
+    {{ form.musica_fav.errors }}
+</div>
 
         <!-- Cores e Gradiente -->
         <div class="flex flex-col lg:flex-row lg:items-center lg:gap-6">
@@ -154,7 +200,7 @@
   </div>
 </div>
 
-<script>
+<script defer>
   (function () {
     const input = document.querySelector('input[type="file"][name="foto"]');
     const preview = document.getElementById('foto-preview');
@@ -176,5 +222,4 @@
     });
   })();
 </script>
-
 {% endblock %}
