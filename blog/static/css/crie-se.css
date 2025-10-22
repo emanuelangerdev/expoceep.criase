@@ -440,6 +440,8 @@ a {
   #img1 img {
     margin-top: -15%;
     margin-left: 50%;
+    margin-left: 50%;
+    margin: auto;
     max-width: 40%;
     height: auto;
   }

@@ -17,8 +17,8 @@ class Card(models.Model):
     insta = models.CharField(max_length=20)
     idade = models.IntegerField(default=0)
     hobbies = models.ManyToManyField(Hobby)
-    bio = models.TextField(max_length=500)
-    musica_fav = models.CharField(max_length=20)
+    bio = models.TextField(max_length=150)
+    musica_fav = models.CharField(max_length=100)
 
     # personalizacao do card
     cor_fundo = models.CharField(default="#3f3f3f", max_length=7)

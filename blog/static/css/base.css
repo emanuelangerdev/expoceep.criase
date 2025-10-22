@@ -121,3 +121,79 @@ a {
     drop-shadow(0 0 10px rgba(255, 255, 255, 0.6))
     drop-shadow(0 0 20px rgba(255, 255, 255, 0.4));
 }
+
+/* --- BOTÃO DE LIKE --- */
+.like-btn {
+  position: relative;       /* muito importante */
+  overflow: visible;        /* permite partículas fora do botão sem cortar */
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .25rem .6rem;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.12);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* ícones */
+.like-btn .bi { font-size: 18px; line-height:1; }
+/* o heart-fill fica sobre o outline e centralizado */
+.heart-outline { opacity: 1; transition: opacity .18s ease, transform .18s ease; }
+.heart-fill {
+  position: absolute;
+  left: 10px;              /* ajuste fino se necessário */
+  top: 50%;
+  transform: translateY(-50%) scale(.6);
+  opacity: 0;
+  transition: transform .22s cubic-bezier(.2,.9,.3,1), opacity .18s ease;
+  color: #ff3b30;
+  pointer-events: none;
+}
+
+/* estado curtido (JS adiciona .liked) */
+.like-btn.liked .heart-outline { opacity: 0; transform: scale(.7); }
+.like-btn.liked .heart-fill { opacity: 1; transform: translateY(-50%) scale(1.12); }
+
+/* contador pop */
+.like-btn .curtidas-count { transition: transform .22s ease, color .22s ease; }
+.like-btn.count-pop .curtidas-count { transform: translateY(-4px) scale(1.08); }
+
+/* BURST (container das partículas) — absoluto e fora do fluxo */
+.like-burst {
+  position: absolute;
+  left: 50%;
+  top: -20px;               /* sobe o burst acima do botão (não empurra) */
+  transform: translateX(-50%);
+  width: 140px;
+  height: 90px;
+  pointer-events: none;
+  overflow: visible;
+}
+
+/* cada partícula visual */
+.like-burst .particle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(.2);
+  animation: burstAnim 700ms cubic-bezier(.2,.9,.3,1);
+}
+
+/* cores */
+.like-burst .p1 { background: #ff375f; }
+.like-burst .p2 { background: #ff9a76; }
+.like-burst .p3 { background: #ffd36e; }
+.like-burst .p4 { background: #6ee7b7; }
+.like-burst .p5 { background: #7ed0ff; }
+.like-burst .p6 { background: #b985ff; }
+
+/* animação: movem-se usando variáveis --dx/--dy */
+@keyframes burstAnim {
+  0%   { opacity: 1; transform: translate(-50%, -50%) scale(.2); }
+  40%  { opacity: 1; transform: translate(calc(-50% + var(--dx)*20px), calc(-50% + var(--dy)*-10px)) scale(1.05); }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--dx)*60px), calc(-50% + var(--dy)*-40px)) scale(.6); }
+}
