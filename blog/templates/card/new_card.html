@@ -113,11 +113,23 @@
               <div>{{ form.curso.label_tag }}{{ form.curso|add_class:"block w-full px-3 py-2 bg-[#0e0e0e] border border-gray-800 rounded-md text-gray-100" }}{{ form.curso.errors }}</div>
             </div>
 
+<<<<<<< HEAD
             <!-- FONTE / HOBBIES / BIO / MUSICA / CORES / FOTO -->
             <div class="flex flex-col md:flex-row md:gap-4 gap-4">
               <div class="w-1/2">{{ form.fonte.label_tag }}{{ form.fonte|add_class:"block w-full px-3 py-2 bg-[#0e0e0e] border border-gray-800 rounded-md text-gray-100" }}{{ form.fonte.errors }}</div>
               <div class="w-1/2 flex items-center"><small class="text-gray-400">Fonts: Inter, Oswald, DM Serif, Playwrite, Abel, Poppins</small></div>
             </div>
+=======
+        <!-- Hobbies -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Hobbies e Interesses</label>
+          <div class="columns-2 md:columns-3 lg:columns-4 gap-2 space-y-1 text-gray-200">
+            {{ form.hobbies }}
+          </div>
+          <p class="text-sm text-gray-400 mt-2">{{ form.hobbies.help_text }}</p>
+          {{ form.hobbies.errors }}
+        </div>
+>>>>>>> bbf7380897d05ce0ffae61d8ac386631534c89bf
 
             <div>
               <label class="block text-sm font-medium mb-2">Hobbies</label>
