@@ -19,47 +19,46 @@
     <article class="bg-[{{ card.cor_fundo }}]/20 border h-[500px] border-[{{ card.cor_destaque }}] rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition flex flex-col
                     transition-transform hover:scale-[1.01] duration-200">
       {% if card.foto %}
-      <img src="{{ card.foto.url }}" alt="{{ card.nome|default:'Card' }}" class="w-[90%] mx-auto h-[200px] rounded object-cover mt-4">
+      <img src="{{ card.foto.url }}" alt="{{ card.nome|default:'Card' }}" style="height: 200px !important" class="w-[90%] mx-auto h-[200px] rounded object-cover mt-4">
       {% else %}
-      <div class="w-[90%] mx-auto mt-4 rounded h-[200px] bg-black/30 flex items-center justify-center text-gray-400">
+      <div style="height: 200px !important" class="w-[90%] mx-auto mt-4 rounded h-[200px] bg-black/30 flex items-center justify-center text-gray-400">
         <span><i class="bi bi-person text-7xl text-[{{ card.cor_fundo }}]/50"></i></span>
       </div>
       {% endif %}
       
       <div class="p-4 flex flex-col flex-grow">
         <div class="flex-grow">
-          <div class="flex flex-wrap items-center justify-between gap-2">
+
+          <div class="flex gap-2">
             <h2
-              class="font-semibold text-lg mb-0 px-2 py-1 bg-white/5 rounded inline-block whitespace-nowrap"
+              class="{% if card.fonte == '1' %}font-inter{% elif card.fonte == '2' %}font-oswald{% elif card.fonte == '3' %}font-dm-serif{% elif card.fonte == '4' %}font-playwrite{% elif card.fonte == '5' %}font-abel{% elif card.fonte == '6' %}font-dancing-script{% elif card.fonte == '7' %}font-shadows-into-light{% elif card.fonte == '8' %}font-poppins{% else %}font-inter{% endif %}
+              font-semibold text-2xl mb-0 px-2 py-1 bg-black/10 rounded whitespace-nowrap flex gap-2 w-fit"
               style="color: {{ card.cor_destaque }};"
             >
               {{ card.nome }}
             </h2>
-
-            {% if card.insta %}
-            <p
-              class="text-sm mb-0 px-2 py-1 whitespace-nowrap"
-              style="color: {{ card.cor_texto }}; opacity: 0.8;"
-            >
-              @{{ card.insta }}
-            </p>
-            {% endif %}
+            <span class="text-sm mt-auto" style="color: {{ card.cor_destaque }};">{{ card.idade }} anos</span>
           </div>
 
-          <div class="flex-col">
+          <div class="flex gap-2 mt-2 ml-1">
             {% if card.periodo == "5" %}
             {% else %}
-              <p class="text-sm my-2" style="color: {{ card.cor_texto }};">
+              <p class="text-sm" style="color: {{ card.cor_texto }};">
                 {{ card.periodo }}° {{ card.curso }}
               </p>
             {% endif %}
-            </div>
-          
+
+            <p
+              class="text-sm whitespace-nowrap"
+              style="color: {{ card.cor_texto }}; opacity: 0.8;">
+              @{{ card.insta }}
+            </p>
+          </div>
 
           <!-- Hobbies centralizados com cor de destaque -->
           <div class="flex flex-wrap items-center w-[85%] gap-2 my-4">
             {% for hobby in card.hobbies.all %}
-            <span class="text-xs font-medium px-3 py-1 rounded-full" style="background-color: {{ card.cor_destaque }};">
+            <span class="text-xs text-black font-medium px-3 py-1 rounded-full" style="background-color: {{ card.cor_destaque }};">
               {{ hobby }}
             </span>
             {% empty %}

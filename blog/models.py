@@ -25,6 +25,14 @@ class Card(models.Model):
     cor_texto =  models.CharField(default="#FFFFFF", max_length=7)
     cor_destaque = models.CharField(default="#1E90FF", max_length=7)
     gradiente = models.BooleanField(default=False)
+    fonte = models.CharField(max_length=1, default="1", choices=[
+        ('1', 'Inter'),
+        ('2', 'Oswald'),
+        ('3', 'DM Serif Display'),
+        ('4', 'Playwrite DE SAS'),
+        ('5', 'Abel'),
+        ('8', 'Poppins'),
+    ])
     
     # media
     foto = models.ImageField(upload_to='fotos', null=True, blank=True)

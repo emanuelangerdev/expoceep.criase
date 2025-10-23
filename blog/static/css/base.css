@@ -1,11 +1,37 @@
 /* --- ESTILOS GERAIS --- */
-
 html { 
   font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth; /* Scroll suave */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Abel&family=DM+Serif+Display:ital@0;1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playwrite+DE+SAS:wght@100..400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap');
+
+:root {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-dm-serif: 'DM Serif Display', serif;
+  --font-abel: 'Abel', sans-serif;
+  --font-dancing: 'Dancing Script', cursive;
+  --font-oswald: 'Oswald', sans-serif;
+  --font-playwrite: 'Playwrite DE SAS', sans-serif;
+  --font-poppins: 'Poppins', sans-serif;
+  --font-shadows: 'Shadows Into Light', cursive;
+}
+/* Classes utilitárias */
+.font-sans { font-family: var(--font-sans); }
+.font-dm-serif { font-family: var(--font-dm-serif); }
+.font-abel { font-family: var(--font-abel); }
+.font-dancing { font-family: var(--font-dancing); }
+.font-oswald { font-family: var(--font-oswald); }
+.font-playwrite { font-family: var(--font-playwrite); }
+.font-poppins { font-family: var(--font-poppins); }
 
 *, *::before, *::after {
   box-sizing: border-box;

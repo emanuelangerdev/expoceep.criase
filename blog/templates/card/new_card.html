@@ -5,221 +5,440 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/form.css' %}">
 <style>
-  .errorlist li {
-    color: #f33d3dff !important;
-    font-size: 0.875rem; 
+  .errorlist li { color: #f33d3dff !important; font-size: 0.875rem; }
+
+  /* Grid: form + preview. Preview column auto até 420px */
+  .form-preview-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+  @media (min-width: 768px) {
+    .form-preview-grid { grid-template-columns: 1fr minmax(280px, 420px); align-items: start; }
   }
+
+  /* Aside: preview sticky */
+  .preview-aside { }
+  @media (min-width: 768px) {
+    .preview-aside {
+      height: calc(100vh - 4rem);
+      overflow: auto;
+      padding-left: 0.25rem;
+    }
+    .preview-aside #preview-card {
+      position: sticky;
+      top: 3.2rem; /* ajuste se tiver header */
+      align-self: start;
+      margin-top: 0;
+    }
+  }
+
+  /* Preview card fiel ao original */
+  #preview-card {
+    height: 500px;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform .2s, box-shadow .2s;
+    width: 100%;
+    box-sizing: border-box;
+    /* border-color and background applied inline by JS */
+  }
+  #preview-card:hover { transform: scale(1.01); box-shadow: 0 8px 20px rgba(0,0,0,0.35); }
+
+  #preview-card .preview-image, #preview-card .preview-image-fallback {
+    width: 90%;
+    margin: 1rem auto 0;
+    height: 200px !important;
+    border-radius: 0.5rem;
+    object-fit: cover;
+    box-sizing: border-box;
+  }
+  #preview-card .preview-image-fallback {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color: rgba(255,255,255,0.6);
+    background: rgba(0,0,0,0.3);
+  }
+
+  /* chips e textos */
+  .hobby-chip { display:inline-block; font-size:0.65rem; padding:0.25rem 0.6rem; border-radius:999px; margin:0.125rem; color:#000; font-weight:500; }
+  .preview-content { padding: 1rem; display:flex; flex-direction:column; flex-grow:1; }
+  .preview-rodape { padding: 0.75rem 1rem; border-top: 1px solid rgba(255,255,255,0.08); display:flex; gap:0.5rem; align-items:center; }
+
+  /* evita estouros no form */
+  .form-preview-grid input, .form-preview-grid select, .form-preview-grid textarea { box-sizing: border-box; max-width: 100%; word-break: break-word; overflow-wrap: anywhere; }
+
+  /* garantir que elementos internos do preview não forcem largura */
+  #preview-card * { box-sizing: border-box; }
 </style>
 
-<!-- Fundo quase preto; container preto ligeiramente diferente -->
 <div class="min-h-screen text-gray-200 py-12 shadow-blue-500">
   <div class="flex justify-center items-start px-4">
-    <div class="w-full max-w-3xl bg-[#0b0b0b]/90 rounded-lg shadow-lg p-6 border border-gray-800">
+    <div class="w-full max-w-7xl bg-[#0b0b0b]/90 rounded-lg shadow-lg p-6 border border-gray-800">
       <h1 class="Poppins text-2xl font-semibold mb-4 meu-titulo">Crie seu Card pessoal</h1>
 
-      <!-- Mensagens de erro -->
-      {% if messages %}
-        <div class="mb-4">
-          {% for message in messages %}
-            <div class="bg-red-600 text-white px-4 py-2 rounded mb-2">
-              {{ message }}
+      <div class="form-preview-grid">
+        <!-- FORM -->
+        <div>
+          {% if messages %}
+          <div class="mb-4">
+            {% for message in messages %}
+            <div class="bg-red-600 text-white px-4 py-2 rounded mb-2">{{ message }}</div>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          <form method="post" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
+            <!-- NOME / INSTA -->
+            <div class="grid grid-cols-1 gap-4">
+              <div class="relative">
+                {{ form.nome|add_class:"peer block w-full pl-4 pr-3 pt-4 pb-3 bg-[#0e0e0e] border border-gray-500/50 rounded-md focus:outline-none focus:border-blue-500 focus:ring-0 text-gray-100 placeholder-transparent required"|attr:"placeholder:." }}
+                <label for="{{ form.nome.id_for_label }}" class="absolute left-3 top-1/2 -translate-y-1/2 text-white-400 pointer-events-none transition-all duration-200 bg-[#0e0e0e] px-1 peer-focus:-top-3 peer-focus:text-sm peer-focus:-translate-y-0 peer-focus:text-blue-500 peer-valid:-top-2 peer-valid:text-sm peer-valid:-translate-y-0">Nome/Apelido</label>
+                {{ form.nome.errors }}
+              </div>
+
+              <div>
+                <div class="relative">
+                  {{ form.insta|add_class:"peer block w-full pl-4 pr-3 pt-4 pb-3 bg-[#0e0e0e] border border-gray-500/50 rounded-md focus:outline-none focus:border-blue-500 focus:ring-0 text-gray-100 placeholder-transparent required"|attr:"placeholder:." }}
+                  <label for="{{ form.insta.id_for_label }}" class="absolute left-3 top-1/2 -translate-y-1/2 text-white-400 pointer-events-none transition-all duration-200 bg-[#0e0e0e] px-1 peer-focus:-top-3 peer-focus:text-sm peer-focus:-translate-y-0 peer-focus:text-blue-500 peer-valid:-top-2 peer-valid:text-sm peer-valid:-translate-y-0">Instagram</label>
+                  {{ form.insta.errors }}
+                </div>
+              </div>
             </div>
-          {% endfor %}
-        </div>
-      {% endif %}
 
-      <form method="post" enctype="multipart/form-data" class="space-y-6">
-        {% csrf_token %}
+            <!-- IDADE / PERIODO / CURSO -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>{{ form.idade.label_tag }}{{ form.idade|add_class:"block w-full px-3 py-2 bg-[#0e0e0e] border border-gray-800 rounded-md focus:outline-none focus:ring-0 focus:border-blue-500 text-gray-100" }}{{ form.idade.errors }}</div>
+              <div>{{ form.periodo.label_tag }}{{ form.periodo|add_class:"block w-full px-3 py-2 bg-[#0e0e0e] border border-gray-800 rounded-md text-gray-100" }}{{ form.periodo.errors }}</div>
+              <div>{{ form.curso.label_tag }}{{ form.curso|add_class:"block w-full px-3 py-2 bg-[#0e0e0e] border border-gray-800 rounded-md text-gray-100" }}{{ form.curso.errors }}</div>
+            </div>
 
-        <!-- Nome + Insta -->
-        <div class="grid grid-cols-1 gap-4">
-<div class="relative">
-    {{ form.nome|add_class:"peer block w-full pl-4 pr-3 pt-4 pb-3 bg-[#0e0e0e] border border-gray-500/50 rounded-md focus:outline-none focus:border-blue-500 focus:ring-0 text-gray-100 placeholder-transparent required"|attr:"placeholder:." }}
-    
-    <label for="{{ form.nome.id_for_label }}" class="
-        absolute left-3 top-1/2 -translate-y-1/2 
-        text-white-400 pointer-events-none 
-        transition-all duration-200 
-        bg-[#0e0e0e] px-1 
-        
-        peer-focus:-top-3 peer-focus:text-sm peer-focus:-translate-y-0 peer-focus:text-blue-500
-        peer-valid:-top-2 peer-valid:text-sm peer-valid:-translate-y-0
-    ">
-        Nome/Apelido 
-    </label>
-    {{ form.nome.errors }}
-</div>
+            <!-- FONTE / HOBBIES / BIO / MUSICA / CORES / FOTO -->
+            <div class="flex flex-col md:flex-row md:gap-4 gap-4">
+              <div class="w-1/2">{{ form.fonte.label_tag }}{{ form.fonte|add_class:"block w-full px-3 py-2 bg-[#0e0e0e] border border-gray-800 rounded-md text-gray-100" }}{{ form.fonte.errors }}</div>
+              <div class="w-1/2 flex items-center"><small class="text-gray-400">Fonts: Inter, Oswald, DM Serif, Playwrite, Abel, Poppins</small></div>
+            </div>
 
-          <div>
- <div class="relative">
-    {{ form.insta|add_class:"peer block w-full pl-4 pr-3 pt-4 pb-3 bg-[#0e0e0e] border border-gray-500/50 rounded-md focus:outline-none focus:border-blue-500 focus:ring-0 text-gray-100 placeholder-transparent required"|attr:"placeholder:." }}
-    
-    <label for="{{ form.insta.id_for_label }}" class="
-        absolute left-3 top-1/2 -translate-y-1/2 
-        text-white-400 pointer-events-none 
-        transition-all duration-200 
-        bg-[#0e0e0e] px-1 
-        
-        peer-focus:-top-3 peer-focus:text-sm peer-focus:-translate-y-0 peer-focus:text-blue-500
-        peer-valid:-top-2 peer-valid:text-sm peer-valid:-translate-y-0
-    ">
-        Instagram 
-    </label>
-    {{ form.insta.errors }}
-</div>
-          </div>
-        </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">Hobbies</label>
+              <div id="hobbies-container" class="columns-2 md:columns-3 lg:columns-4 gap-2 space-y-1 text-gray-200">{{ form.hobbies }}</div>
+              <p class="text-sm text-gray-400 mt-2">{{ form.hobbies.help_text }}</p>
+              {{ form.hobbies.errors }}
+            </div>
 
-        <!-- Idade / Período / Curso -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <div>
-      {{ form.idade.label_tag }}
-      {{ form.idade|add_class:"block w-full px-3 py-2 bg-[#0e0e0e] border border-gray-800 rounded-md focus:outline-none focus:ring-0 focus:border-blue-500 text-gray-100" }}
-      {{ form.idade.errors }}
-    </div>
+            <div class="relative">
+              {{ form.bio|add_class:"peer block w-full pl-4 pr-3 pt-4 pb-3 bg-[#0e0e0e]/90 border border-gray-500/50 rounded-md focus:outline-none focus:border-blue-500 focus:ring-0 text-gray-100 placeholder-transparent required"|attr:"placeholder:." }}
+              <label for="{{ form.bio.id_for_label }}" class="absolute left-3 top-4 -translate-y-1/2 text-white-400 pointer-events-none transition-all duration-200 bg-[#0e0e0e] px-1 peer-focus:-top-3 peer-focus:text-sm peer-focus:-translate-y-0 peer-focus:text-blue-500 peer-valid:-top-2 peer-valid:text-sm peer-valid:-translate-y-0">Bio</label>
+              {{ form.bio.errors }}
+            </div>
 
-    <div>
-      {{ form.periodo.label_tag }}
-      {{ form.periodo|add_class:"block w-full px-3 py-2 bg-[#0e0e0e] border border-gray-800 rounded-md text-gray-100" }}
-      {{ form.periodo.errors }}
-    </div>
+            <div class="relative">
+              {{ form.musica_fav|add_class:"peer block w-full pl-4 pr-3 pt-4 pb-3 bg-[#0e0e0e]/90 border border-gray-500/50 rounded-md focus:outline-none focus:border-blue-500 focus:ring-0 text-gray-100 placeholder-transparent required"|attr:"placeholder:." }}
+              <label for="{{ form.musica_fav.id_for_label }}" class="absolute left-3 top-1/2 -translate-y-1/2 text-white-400 pointer-events-none transition-all duration-200 bg-[#0e0e0e] px-1 peer-focus:-top-3 peer-focus:text-sm peer-focus:-translate-y-0 peer-focus:text-blue-500 peer-valid:-top-2 peer-valid:text-sm peer-valid:-translate-y-0">Música favorita</label>
+              {{ form.musica_fav.errors }}
+            </div>
 
-    <div>
-      {{ form.curso.label_tag }}
-      {{ form.curso|add_class:"block w-full px-3 py-2 bg-[#0e0e0e] border border-gray-800 rounded-md text-gray-100" }}
-      {{ form.curso.errors }}
-    </div>
-</div>
+            <div class="flex flex-col lg:flex-row lg:items-center lg:gap-6">
+              <div class="flex items-center gap-3">{{ form.cor_fundo.label_tag }}{{ form.cor_fundo|add_class:"block w-14 h-7 p-0 border border-gray-700 rounded" }}{{ form.cor_fundo.errors }}</div>
+              <div class="flex items-center gap-3 mt-3 lg:mt-0">{{ form.cor_texto.label_tag }}{{ form.cor_texto|add_class:"block w-14 h-7 p-0 border border-gray-700 rounded" }}{{ form.cor_texto.errors }}</div>
+              <div class="flex items-center gap-3 mt-3 lg:mt-0">{{ form.cor_destaque.label_tag }}{{ form.cor_destaque|add_class:"block w-14 h-7 p-0 border border-gray-700 rounded" }}{{ form.cor_destaque.errors }}</div>
+            </div>
 
-        <!-- Hobbies -->
-        <div>
-          <label class="block text-sm font-medium mb-2">Hobbies</label>
-          <div class="columns-2 md:columns-3 lg:columns-4 gap-2 space-y-1 text-gray-200">
-            {{ form.hobbies }}
-          </div>
-          <p class="text-sm text-gray-400 mt-2">{{ form.hobbies.help_text }}</p>
-          {{ form.hobbies.errors }}
-        </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">Foto de perfil</label>
+              <div class="flex items-center space-x-4">
+                <label for="id_foto" class="cursor-pointer px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-100 rounded-md border border-gray-700 shadow-sm transition">Escolher arquivo</label>
+                <span id="file-name" class="text-gray-400 text-sm italic">Nenhum arquivo selecionado</span>
+              </div>
+              <input type="file" name="foto" id="id_foto" style="display:none;">
+              <!-- Preview (único node) -->
+              <div id="preview-root" class="mt-3 preview-root">
+                <!-- PREVIEW fiel ao original -->
+                <article id="preview-card" class="rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition flex flex-col transition-transform hover:scale-[1.01] duration-200" style="height:500px;">
+                  <!-- imagem / fallback -->
+                  <div id="preview-image-wrap">
+                    <img id="preview-image" class="preview-image hidden rounded object-cover mt-4" src="#" alt="Preview imagem" style="height:200px !important;" />
+                    <div id="preview-image-fallback" class="preview-image-fallback mt-4 rounded h-[200px] w-[90%] mx-auto bg-black/30 flex items-center justify-center text-gray-400" style="height:200px !important;">
+                      <span id="preview-fallback-icon"><i class="bi bi-person text-7xl"></i></span>
+                    </div>
+                  </div>
 
-        <!-- Bio -->
-<div class="relative">
- {{ form.bio|add_class:"peer block w-full pl-4 pr-3 pt-4 pb-3 bg-[#0e0e0e]/90 border border-gray-500/50 rounded-md focus:outline-none focus:border-blue-500 focus:ring-0 text-gray-100 placeholder-transparent required"|attr:"placeholder:." }}
- 
- <label for="{{ form.bio.id_for_label }}" class="
- absolute left-3 top-4 -translate-y-1/2 
- text-white-400 pointer-events-none 
- transition-all duration-200 
- bg-[#0e0e0e] px-1 
- peer-focus:-top-3 peer-focus:text-sm peer-focus:-translate-y-0 peer-focus:text-blue-500
- peer-valid:-top-2 peer-valid:text-sm peer-valid:-translate-y-0
- ">
- Bio
- </label>
- {{ form.bio.errors }}
-</div>
+                  <div class="p-4 flex flex-col flex-grow preview-content">
+                    <div class="flex-grow">
+                      <div class="flex gap-2 items-start">
+                        <h2 id="preview-nome" class="font-semibold text-2xl mb-0 px-2 py-1 bg-black/10 rounded whitespace-nowrap flex gap-2 w-fit">Nome</h2>
+                        <span id="preview-idade" class="text-sm mt-auto">0 anos</span>
+                      </div>
 
-        <!-- Música favorita -->
-<div class="relative">
-    {{ form.musica_fav|add_class:"peer block w-full pl-4 pr-3 pt-4 pb-3 bg-[#0e0e0e]/90 border border-gray-500/50 rounded-md focus:outline-none focus:border-blue-500 focus:ring-0 text-gray-100 placeholder-transparent required"|attr:"placeholder:." }}
-    
-    <label for="{{ form.musica_fav.id_for_label }}" class="
-        absolute left-3 top-1/2 -translate-y-1/2 
-        text-white-400 pointer-events-none 
-        transition-all duration-200 
-        bg-[#0e0e0e] px-1 
-        
-        peer-focus:-top-3 peer-focus:text-sm peer-focus:-translate-y-0 peer-focus:text-blue-500
-        peer-valid:-top-2 peer-valid:text-sm peer-valid:-translate-y-0
-    ">
-        Música favorita
-    </label>
-    {{ form.musica_fav.errors }}
-</div>
+                      <div class="flex gap-2 mt-2 ml-1">
+                        <p id="preview-periodo_curso" class="text-sm"></p>
+                        <p id="preview-insta" class="text-sm whitespace-nowrap" style="opacity:0.8;"></p>
+                      </div>
 
-        <!-- Cores e Gradiente -->
-        <div class="flex flex-col lg:flex-row lg:items-center lg:gap-6">
-          <div class="flex items-center gap-3">
-            {{ form.cor_fundo.label_tag }}
-            {{ form.cor_fundo|add_class:"block w-14 h-7 p-0 border border-gray-700 rounded" }}
-            {{ form.cor_fundo.errors }}
-          </div>
+                      <div id="preview-hobbies" class="flex flex-wrap items-center w-[85%] gap-2 my-4">
+                        <span class="text-xs font-medium px-3 py-1 rounded-full">Nenhum hobby</span>
+                      </div>
 
-          <div class="flex items-center gap-3 mt-3 lg:mt-0">
-            {{ form.cor_texto.label_tag }}
-            {{ form.cor_texto|add_class:"block w-14 h-7 p-0 border border-gray-700 rounded" }}
-            {{ form.cor_texto.errors }}
-          </div>
+                      <p id="preview-bio" class="text-sm mb-3 overflow-hidden text-ellipsis line-clamp-3">Bio...</p>
+                    </div>
 
-           <div class="flex items-center gap-3 mt-3 lg:mt-0">
-            {{ form.cor_destaque.label_tag }}
-            {{ form.cor_destaque|add_class:"block w-14 h-7 p-0 border border-gray-700 rounded" }}
-            {{ form.cor_destaque.errors }}
-          </div>
+                    <div class="flex items-center text-sm mt-auto pt-4 border-t border-gray-300/30 preview-rodape">
+                      <button class="text-white gap-2 bg-blue-600/50 border border-blue-600 px-2 py-1 rounded transition-300 hover:bg-blue-600 hover:shadow"><i class="bi bi-eye"></i> Ver</button>
 
-          <div class="flex items-center space-x-2 mt-3 lg:mt-0">
-            {{ form.gradiente }}
-            <span class="text-gray-300 text-sm">Usar gradiente no fundo (gerado a partir da cor escolhida)</span>
-            {{ form.gradiente.errors }}
-          </div>
+                      <button id="btn-comentarios-preview" class="btn-comentarios gap-2 text-white ml-2 bg-gray-600/50 border border-gray-600 px-2 py-1 rounded transition-300 hover:bg-gray-600 hover:shadow"><i class="bi bi-chat-left"></i> Comentários</button>
+
+                      <button class="btn-curtir like-btn ml-auto transition-300 hover:bg-red-600/50" aria-label="Curtir" aria-pressed="false">
+                        <i class="bi bi-heart heart-outline" aria-hidden="true"></i>
+                        <i class="bi bi-heart-fill heart-fill hidden" aria-hidden="true"></i>
+                        <span class="curtidas-count">0</span>
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              </div>
+              {{ form.foto.errors }}
+            </div>
+
+            <div class="pt-4 border-t border-gray-800">
+              <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md shadow-sm transition">Salvar</button>
+            </div>
+          </form>
         </div>
 
-        <!-- Foto (upload) -->
-        <div>
-          <label class="block text-sm font-medium mb-2">Foto de perfil</label>
+        <!-- ASIDE (coluna 2) -->
+        <aside class="preview-aside">
+          <div id="preview-clone-anchor"></div>
+        </aside>
 
-          <div class="flex items-center space-x-4">
-            <!-- Botão estilizado -->
-            <label for="id_foto" class="cursor-pointer px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-100 rounded-md border border-gray-700 shadow-sm transition">
-              Escolher arquivo
-            </label>
-
-            <!-- Nome do arquivo selecionado -->
-            <span id="file-name" class="text-gray-400 text-sm italic">Nenhum arquivo selecionado</span>
-          </div>
-
-          <!-- Campo real (oculto) -->
-          <input type="file" name="foto" id="id_foto" style="opacity:0;position:absolute;z-index:-1;">
-
-          <!-- Preview -->
-          <div class="mt-3">
-            <img id="foto-preview" src="#" alt="Preview" class="hidden w-32 h-32 object-cover rounded border border-gray-700 shadow-sm" />
-          </div>
-
-          {{ form.foto.errors }}
-        </div>
-
-        <!-- Botão de submit -->
-        <div class="pt-4 border-t border-gray-800">
-          <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md shadow-sm transition">
-            Salvar
-          </button>
-        </div>
-
-      </form>
+      </div>
     </div>
   </div>
 </div>
 
 <script defer>
   (function () {
-    const input = document.querySelector('input[type="file"][name="foto"]');
-    const preview = document.getElementById('foto-preview');
-    const fileName = document.getElementById('file-name');
+    const $ = s => document.querySelector(s);
+    const $all = s => Array.from(document.querySelectorAll(s));
 
-    if (!input) return;
+    // Ajuste estes IDs se seu form gerar ids diferentes
+    const inputs = {
+      nome: $('#id_nome'),
+      insta: $('#id_insta'),
+      idade: $('#id_idade'),
+      periodo: $('#id_periodo'),
+      curso: $('#id_curso'),
+      fonte: $('#id_fonte'),
+      bio: $('#id_bio'),
+      musica: $('#id_musica_fav'),
+      cor_fundo: $('#id_cor_fundo'),
+      cor_texto: $('#id_cor_texto'),
+      cor_destaque: $('#id_cor_destaque'),
+      foto: $('#id_foto'),
+    };
 
-    input.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (!file) {
-        fileName.textContent = 'Nenhum arquivo selecionado';
-        preview.classList.add('hidden');
-        return;
+    const hobbiesSelect = $('#id_hobbies');
+    const hobbyCheckboxes = document.querySelectorAll('input[name="hobbies"]');
+
+    const previewCard = $('#preview-card');
+    const previewRoot = $('#preview-root');
+    const previewCloneAnchor = $('#preview-clone-anchor');
+
+    const previewNome = $('#preview-nome');
+    const previewInsta = $('#preview-insta');
+    const previewIdade = $('#preview-idade');
+    const previewPeriodoCurso = $('#preview-periodo_curso');
+    const previewHobbies = $('#preview-hobbies');
+    const previewBio = $('#preview-bio');
+    const previewImage = $('#preview-image');
+    const previewImageFallback = $('#preview-image-fallback');
+    const previewFallbackIcon = $('#preview-fallback-icon');
+    const fileNameSpan = $('#file-name');
+
+    // Mapeamento de fontes (valores do select -> família)
+    const FONT_MAP = {
+      '1': "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+      '2': "Oswald, sans-serif",
+      '3': "'DM Serif Display', serif",
+      '4': "'Playwrite', serif",
+      '5': "Abel, sans-serif",
+      '8': "Poppins, sans-serif"
+    };
+
+    function hexToRgba(hex, a) {
+      if (!hex) return null;
+      hex = hex.replace('#','');
+      if (hex.length === 3) hex = hex.split('').map(c=>c+c).join('');
+      const n = parseInt(hex,16);
+      const r = (n>>16)&255, g=(n>>8)&255, b=n&255;
+      return `rgba(${r},${g},${b},${a})`;
+    }
+
+    // lê hobbies usando texto (option text ou label text)
+    function readHobbies() {
+      const out = [];
+      if (hobbiesSelect && hobbiesSelect.multiple) {
+        Array.from(hobbiesSelect.selectedOptions).forEach(o => out.push(o.textContent.trim()));
+        return out;
+      }
+      if (hobbyCheckboxes && hobbyCheckboxes.length) {
+        hobbyCheckboxes.forEach(cb => {
+          if (!cb.checked) return;
+          if (cb.id) {
+            const lab = document.querySelector(`label[for="${cb.id}"]`);
+            if (lab && lab.textContent.trim()) { out.push(lab.textContent.trim()); return; }
+          }
+          if (cb.dataset && cb.dataset.label) { out.push(cb.dataset.label); return; }
+          out.push(cb.value || 'Hobby');
+        });
+        return out;
+      }
+      // fallback
+      const containerChecks = document.querySelectorAll('#hobbies-container input[type="checkbox"]');
+      containerChecks.forEach(cb => {
+        if (cb.checked) {
+          const lab = cb.id ? document.querySelector(`label[for="${cb.id}"]`) : null;
+          out.push(lab ? lab.textContent.trim() : (cb.value || 'Hobby'));
+        }
+      });
+      return out;
+    }
+
+    // pega texto do option selecionado (se for select)
+    function selectedOptionText(el) {
+      if (!el) return '';
+      if (el.tagName === 'SELECT') {
+        const so = el.selectedOptions && el.selectedOptions[0];
+        return so ? so.textContent.trim() : '';
+      }
+      return el.value || '';
+    }
+
+    // aplica valores no preview
+    function updatePreview() {
+      if (!previewCard) return;
+
+      // NOME (aplica fonte especial apenas no nome)
+      const nomeVal = (inputs.nome?.value || 'Nome').trim();
+      previewNome.textContent = nomeVal;
+
+      // Ajustar fonte: nome com fonte selecionada; resto com Inter
+      const fonteVal = inputs.fonte?.value || '1';
+      const nomeFamily = FONT_MAP[fonteVal] || FONT_MAP['1'];
+      const defaultFamily = FONT_MAP['1'];
+      // aplica família base Inter ao card
+      previewCard.style.fontFamily = defaultFamily;
+      // aplica família especial só no nome
+      previewNome.style.fontFamily = nomeFamily;
+
+      // Instagram
+      const instaVal = (inputs.insta?.value || '').trim();
+      previewInsta.textContent = instaVal ? '@' + instaVal.replace(/^@+/, '') : '';
+
+      // Idade
+      previewIdade.textContent = inputs.idade?.value ? `${inputs.idade.value} anos` : '';
+
+      // Período / curso -> pega texto das options
+      const periodoText = selectedOptionText(inputs.periodo) || '';
+      const cursoText = selectedOptionText(inputs.curso) || '';
+      if (inputs.periodo && inputs.periodo.value && inputs.periodo.value !== '5') {
+        previewPeriodoCurso.textContent = `${periodoText}° ${cursoText}`.trim();
+      } else {
+        previewPeriodoCurso.textContent = cursoText || '';
       }
 
-      fileName.textContent = file.name;
-      preview.src = URL.createObjectURL(file);
-      preview.classList.remove('hidden');
+      // Bio
+      previewBio.textContent = inputs.bio?.value || '';
+
+      // Hobbies (usa texto)
+      const hobbies = readHobbies();
+      previewHobbies.innerHTML = '';
+      if (hobbies.length === 0) {
+        const none = document.createElement('span'); none.className='text-xs font-medium px-3 py-1 rounded-full'; none.textContent='Nenhum hobby'; previewHobbies.appendChild(none);
+      } else {
+        hobbies.forEach(h => {
+          const sp = document.createElement('span');
+          sp.className = 'text-xs text-black font-medium px-3 py-1 rounded-full';
+          sp.textContent = h;
+          previewHobbies.appendChild(sp);
+        });
+      }
+
+      // Cores: aplicar inline
+      const corFundo = inputs.cor_fundo?.value || '#000000';
+      const corTexto = inputs.cor_texto?.value || '#FFFFFF';
+      const corDestaque = inputs.cor_destaque?.value || '#60a5fa';
+
+      previewCard.style.background = hexToRgba(corFundo, 0.12); // equivalente a /20
+      previewCard.style.border = `2px solid ${corDestaque}`;
+      previewCard.style.color = corTexto;
+      // icone fallback com opacidade do fundo
+      if (previewFallbackIcon) {
+        previewFallbackIcon.style.color = hexToRgba(corFundo, 0.5);
+      }
+      // aplica destaque aos hobbies e ao nome/idade se desejar
+      previewNome.style.color = corDestaque;
+      previewIdade.style.color = corDestaque;
+      $all('#preview-hobbies span').forEach(el => { el.style.backgroundColor = corDestaque; el.style.color = '#000'; });
+
+      // forçar que o texto que possa ter style inline use cor correta (pouco provável, mas garantido)
+      $all('#preview-card *').forEach(node => {
+        if (!node.style) return;
+        // não sobrescrever a cor do nome (já feito)
+        if (node.id === 'preview-nome') return;
+        node.style.color = corTexto;
+      });
+    }
+
+    // imagem
+    function handleFileChange(e) {
+      const file = e?.target?.files?.[0];
+      if (!file) {
+        fileNameSpan.textContent = 'Nenhum arquivo selecionado';
+        previewImage.classList.add('hidden');
+        previewImageFallback.style.display = 'flex';
+        previewImage.src = '#';
+        return;
+      }
+      fileNameSpan.textContent = file.name;
+      const url = URL.createObjectURL(file);
+      previewImage.src = url;
+      previewImage.classList.remove('hidden');
+      previewImageFallback.style.display = 'none';
+    }
+
+    // move único preview entre mobile (previewRoot) e aside (previewCloneAnchor)
+    function relocatePreview() {
+      const desktop = window.matchMedia('(min-width: 768px)').matches;
+      if (!previewCard || !previewRoot || !previewCloneAnchor) return;
+      if (desktop) {
+        if (previewCard.parentNode !== previewCloneAnchor) previewCloneAnchor.appendChild(previewCard);
+      } else {
+        if (previewCard.parentNode !== previewRoot) previewRoot.appendChild(previewCard);
+      }
+    }
+
+    // attach events (ajuste IDs se necessário)
+    Object.values(inputs).forEach(inp => {
+      if (!inp) return;
+      const ev = (inp.type === 'color' || inp.tagName === 'SELECT') ? 'change' : 'input';
+      inp.addEventListener(ev, () => { updatePreview(); relocatePreview(); });
     });
+    if (inputs.foto) inputs.foto.addEventListener('change', (e) => { handleFileChange(e); updatePreview(); });
+
+    if (hobbiesSelect) hobbiesSelect.addEventListener('change', updatePreview);
+    if (hobbyCheckboxes && hobbyCheckboxes.length) hobbyCheckboxes.forEach(cb => cb.addEventListener('change', updatePreview));
+    document.addEventListener('change', (e) => { if (e.target && e.target.name === 'hobbies') updatePreview(); });
+
+    window.addEventListener('resize', relocatePreview);
+
+    // inicializa
+    updatePreview();
+    relocatePreview();
+
+    // debug
+    window.__cardPreview = { updatePreview, relocatePreview, handleFileChange };
+
   })();
 </script>
+
 {% endblock %}
