@@ -14,24 +14,24 @@
   }
 
   /* Aside: preview sticky */
-  .preview-aside { }
+  .preview-aside { position: relative; } /* sem overflow para sticky funcionar */
   @media (min-width: 768px) {
     .preview-aside {
-      height: calc(100vh - 4rem);
-      overflow: auto;
       padding-left: 0.25rem;
     }
     .preview-aside #preview-card {
       position: sticky;
-      top: 3.2rem; /* ajuste se tiver header */
+      top: 4rem; /* ajuste para header */
       align-self: start;
       margin-top: 0;
+      z-index: 20;
+      width: 100%;
     }
   }
 
   /* Preview card fiel ao original */
   #preview-card {
-    height: 500px;
+    height: 550px; /* agora 550 conforme markup */
     border-radius: 0.5rem;
     overflow: hidden;
     display: flex;
@@ -39,9 +39,12 @@
     transition: transform .2s, box-shadow .2s;
     width: 100%;
     box-sizing: border-box;
-    /* border-color and background applied inline by JS */
+    /* background / border / color applied inline por JS */
   }
-  #preview-card:hover { transform: scale(1.01); box-shadow: 0 8px 20px rgba(0,0,0,0.35); }
+  /* hover só no desktop (só estilização) */
+  @media (min-width: 768px) {
+    #preview-card:hover { transform: scale(1.01); box-shadow: 0 8px 20px rgba(0,0,0,0.35); }
+  }
 
   #preview-card .preview-image, #preview-card .preview-image-fallback {
     width: 90%;
@@ -59,16 +62,42 @@
     background: rgba(0,0,0,0.3);
   }
 
+  .form-preview-grid > div:first-of-type {
+      min-width: 0;
+  }
+
+  /* Grid: form + preview. Preview column auto até 420px */
+  .form-preview-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+  @media (min-width: 768px) {
+    .form-preview-grid { grid-template-columns: 1fr minmax(280px, 420px); align-items: start; }
+  }
+  
   /* chips e textos */
   .hobby-chip { display:inline-block; font-size:0.65rem; padding:0.25rem 0.6rem; border-radius:999px; margin:0.125rem; color:#000; font-weight:500; }
   .preview-content { padding: 1rem; display:flex; flex-direction:column; flex-grow:1; }
   .preview-rodape { padding: 0.75rem 1rem; border-top: 1px solid rgba(255,255,255,0.08); display:flex; gap:0.5rem; align-items:center; }
 
   /* evita estouros no form */
-  .form-preview-grid input, .form-preview-grid select, .form-preview-grid textarea { box-sizing: border-box; max-width: 100%; word-break: break-word; overflow-wrap: anywhere; }
-
+  .form-preview-grid input, .form-preview-grid select, .form-preview-grid textarea { 
+    box-sizing: border-box; 
+    max-width: 100%; 
+    word-break: break-word; 
+    overflow-wrap: anywhere; 
+    min-width: 0; /* <-- Adicione esta linha */
+  }
   /* garantir que elementos internos do preview não forcem largura */
   #preview-card * { box-sizing: border-box; }
+
+  /* modal básica */
+  .modal { display: none; }
+  .modal.active { display: flex; }
+  .modal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.6); }
+  .modal-panel { position: relative; z-index: 10; width: 100%; max-width: 720px; border-radius: 0.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+
+  /* esconder container original (mantém inputs dentro do form; vamos mover pro modal) */
+  #hobbies-container { display: none; }
+  /* badge no botão */
+  #hobbies-badge { margin-left: .5rem; color: #cbd5e1; font-size: .9rem; }
 </style>
 
 <div class="min-h-screen text-gray-200 py-12 shadow-blue-500">
@@ -87,7 +116,7 @@
           </div>
           {% endif %}
 
-          <form method="post" enctype="multipart/form-data" class="space-y-6">
+          <form method="post" enctype="multipart/form-data" class="space-y-6" id="card-form">
             {% csrf_token %}
             <!-- NOME / INSTA -->
             <div class="grid grid-cols-1 gap-4">
@@ -113,27 +142,29 @@
               <div>{{ form.curso.label_tag }}{{ form.curso|add_class:"block w-full px-3 py-2 bg-[#0e0e0e] border border-gray-800 rounded-md text-gray-100" }}{{ form.curso.errors }}</div>
             </div>
 
-<<<<<<< HEAD
             <!-- FONTE / HOBBIES / BIO / MUSICA / CORES / FOTO -->
             <div class="flex flex-col md:flex-row md:gap-4 gap-4">
               <div class="w-1/2">{{ form.fonte.label_tag }}{{ form.fonte|add_class:"block w-full px-3 py-2 bg-[#0e0e0e] border border-gray-800 rounded-md text-gray-100" }}{{ form.fonte.errors }}</div>
               <div class="w-1/2 flex items-center"><small class="text-gray-400">Fonts: Inter, Oswald, DM Serif, Playwrite, Abel, Poppins</small></div>
             </div>
-=======
-        <!-- Hobbies -->
-        <div>
-          <label class="block text-sm font-medium mb-2">Hobbies e Interesses</label>
-          <div class="columns-2 md:columns-3 lg:columns-4 gap-2 space-y-1 text-gray-200">
-            {{ form.hobbies }}
-          </div>
-          <p class="text-sm text-gray-400 mt-2">{{ form.hobbies.help_text }}</p>
-          {{ form.hobbies.errors }}
-        </div>
->>>>>>> bbf7380897d05ce0ffae61d8ac386631534c89bf
 
             <div>
               <label class="block text-sm font-medium mb-2">Hobbies</label>
-              <div id="hobbies-container" class="columns-2 md:columns-3 lg:columns-4 gap-2 space-y-1 text-gray-200">{{ form.hobbies }}</div>
+
+              <!-- Botão que abre modal -->
+              <div class="flex items-center gap-3">
+                <button type="button" id="hobbies-btn" class="px-3 py-2 bg-gray-800 hover:bg-gray-700 text-gray-100 rounded-md border border-gray-700 transition" aria-haspopup="dialog" aria-expanded="false">
+                  Selecionar hobbies
+                  <span id="hobbies-badge">Nenhum</span>
+                </button>
+                <small class="text-gray-400">Abra e selecione seus hobbies</small>
+              </div>
+
+              <!-- Container original (oculto) que contém o widget Django. Mantém inputs dentro do form. -->
+              <div id="hobbies-container" class="mt-3 text-gray-200">
+                {{ form.hobbies }}
+              </div>
+
               <p class="text-sm text-gray-400 mt-2">{{ form.hobbies.help_text }}</p>
               {{ form.hobbies.errors }}
             </div>
@@ -145,9 +176,9 @@
             </div>
 
             <div class="relative">
-              {{ form.musica_fav|add_class:"peer block w-full pl-4 pr-3 pt-4 pb-3 bg-[#0e0e0e]/90 border border-gray-500/50 rounded-md focus:outline-none focus:border-blue-500 focus:ring-0 text-gray-100 placeholder-transparent required"|attr:"placeholder:." }}
-              <label for="{{ form.musica_fav.id_for_label }}" class="absolute left-3 top-1/2 -translate-y-1/2 text-white-400 pointer-events-none transition-all duration-200 bg-[#0e0e0e] px-1 peer-focus:-top-3 peer-focus:text-sm peer-focus:-translate-y-0 peer-focus:text-blue-500 peer-valid:-top-2 peer-valid:text-sm peer-valid:-translate-y-0">Música favorita</label>
-              {{ form.musica_fav.errors }}
+              {{ form.musica_favorita|add_class:"peer block w-full pl-4 pr-3 pt-4 pb-3 bg-[#0e0e0e]/90 border border-gray-500/50 rounded-md focus:outline-none focus:border-blue-500 focus:ring-0 text-gray-100 placeholder-transparent required"|attr:"placeholder:." }}
+              <label for="{{ form.musica_favorita.id_for_label }}" class="absolute left-3 top-1/2 -translate-y-1/2 text-white-400 pointer-events-none transition-all duration-200 bg-[#0e0e0e] px-1 peer-focus:-top-3 peer-focus:text-sm peer-focus:-translate-y-0 peer-focus:text-blue-500 peer-valid:-top-2 peer-valid:text-sm peer-valid:-translate-y-0">Música favorita</label>
+              {{ form.musica_favorita.errors }}
             </div>
 
             <div class="flex flex-col lg:flex-row lg:items-center lg:gap-6">
@@ -165,9 +196,8 @@
               <input type="file" name="foto" id="id_foto" style="display:none;">
               <!-- Preview (único node) -->
               <div id="preview-root" class="mt-3 preview-root">
-                <!-- PREVIEW fiel ao original -->
-                <article id="preview-card" class="rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition flex flex-col transition-transform hover:scale-[1.01] duration-200" style="height:500px;">
-                  <!-- imagem / fallback -->
+                <!-- PREVIEW fiel ao original: substituído pelo markup que você mandou -->
+                <article id="preview-card" class="rounded-lg overflow-hidden shadow-sm transition flex flex-col transition-transform duration-200" style="height:550px;">
                   <div id="preview-image-wrap">
                     <img id="preview-image" class="preview-image hidden rounded object-cover mt-4" src="#" alt="Preview imagem" style="height:200px !important;" />
                     <div id="preview-image-fallback" class="preview-image-fallback mt-4 rounded h-[200px] w-[90%] mx-auto bg-black/30 flex items-center justify-center text-gray-400" style="height:200px !important;">
@@ -177,33 +207,51 @@
 
                   <div class="p-4 flex flex-col flex-grow preview-content">
                     <div class="flex-grow">
-                      <div class="flex gap-2 items-start">
-                        <h2 id="preview-nome" class="font-semibold text-2xl mb-0 px-2 py-1 bg-black/10 rounded whitespace-nowrap flex gap-2 w-fit">Nome</h2>
-                        <span id="preview-idade" class="text-sm mt-auto">0 anos</span>
+
+                      <div class="flex gap-2">
+                        <h2 id="preview-nome"
+                            class="font-inter font-semibold text-2xl mb-0 px-2 py-1 bg-black/10 rounded whitespace-nowrap flex gap-2 w-fit"
+                            style="color: #60a5fa;">
+                          Nome
+                        </h2>
+                        <span id="preview-idade" class="text-sm mt-auto" style="color: #60a5fa;">0 anos</span>
                       </div>
 
                       <div class="flex gap-2 mt-2 ml-1">
-                        <p id="preview-periodo_curso" class="text-sm"></p>
-                        <p id="preview-insta" class="text-sm whitespace-nowrap" style="opacity:0.8;"></p>
+                        <p id="preview-periodo_curso" class="text-sm" style="color: #fff;"></p>
+                        <p id="preview-insta" class="text-sm whitespace-nowrap" style="opacity:0.8;color:#fff;"></p>
                       </div>
 
+                      <!-- Hobbies centralizados com cor de destaque -->
                       <div id="preview-hobbies" class="flex flex-wrap items-center w-[85%] gap-2 my-4">
                         <span class="text-xs font-medium px-3 py-1 rounded-full">Nenhum hobby</span>
                       </div>
 
-                      <p id="preview-bio" class="text-sm mb-3 overflow-hidden text-ellipsis line-clamp-3">Bio...</p>
+                      <p id="preview-bio" class="text-sm mb-3 overflow-hidden text-ellipsis line-clamp-3" style="color:#fff;">
+                        Bio...
+                      </p>
+
+                      <p id="preview-musica" class="text-sm font-semibold flex gap-2" style="color:#60a5fa;">
+                        <i class="bi bi-music-note-beamed animate-pulse"></i> Música favorita: —
+                      </p>
                     </div>
 
+                    <!-- Seção fixa no rodapé do card -->
                     <div class="flex items-center text-sm mt-auto pt-4 border-t border-gray-300/30 preview-rodape">
-                      <button class="text-white gap-2 bg-blue-600/50 border border-blue-600 px-2 py-1 rounded transition-300 hover:bg-blue-600 hover:shadow"><i class="bi bi-eye"></i> Ver</button>
+                      <button class="ver-btn text-white gap-2 bg-blue-600/50 border border-blue-600 px-2 py-1 rounded transition-300 hover:bg-blue-600 hover:shadow" data-card-id="preview" aria-haspopup="dialog" aria-controls="card-modal">
+                        <i class="bi bi-eye"></i> Ver
+                      </button>
 
-                      <button id="btn-comentarios-preview" class="btn-comentarios gap-2 text-white ml-2 bg-gray-600/50 border border-gray-600 px-2 py-1 rounded transition-300 hover:bg-gray-600 hover:shadow"><i class="bi bi-chat-left"></i> Comentários</button>
+                      <button id="btn-comentarios-preview" class="btn-comentarios gap-2 text-white ml-2 bg-gray-600/50 border border-gray-600 px-2 py-1 rounded transition-300 hover:bg-gray-600 hover:shadow">
+                        <i class="bi bi-chat-left"></i> Comentários
+                      </button>
 
                       <button class="btn-curtir like-btn ml-auto transition-300 hover:bg-red-600/50" aria-label="Curtir" aria-pressed="false">
                         <i class="bi bi-heart heart-outline" aria-hidden="true"></i>
                         <i class="bi bi-heart-fill heart-fill hidden" aria-hidden="true"></i>
                         <span class="curtidas-count">0</span>
                       </button>
+
                     </div>
                   </div>
                 </article>
@@ -215,6 +263,23 @@
               <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md shadow-sm transition">Salvar</button>
             </div>
           </form>
+
+          <!-- Modal de hobbies (dentro do form para manter inputs) -->
+          <div id="hobbies-modal" class="modal fixed inset-0 z-50 items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="hobbies-modal-title" aria-hidden="true">
+            <div class="modal-overlay" data-close-modal></div>
+            <div class="modal-panel bg-[#0e0e0e] p-6 rounded-lg mx-4">
+              <h3 id="hobbies-modal-title" class="text-xl font-semibold">Escolha seus hobbies</h3>
+              <div id="hobbies-modal-body" class="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3 max-h-64 overflow-auto">
+                <!-- aqui vamos mover os inputs do #hobbies-container -->
+              </div>
+
+              <div class="mt-4 flex justify-end gap-3">
+                <button type="button" id="hobbies-cancel" class="px-3 py-2 bg-gray-700 hover:bg-gray-600 rounded">Cancelar</button>
+                <button type="button" id="hobbies-save" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">Salvar</button>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         <!-- ASIDE (coluna 2) -->
@@ -241,16 +306,23 @@
       curso: $('#id_curso'),
       fonte: $('#id_fonte'),
       bio: $('#id_bio'),
-      musica: $('#id_musica_fav'),
+      musica: $('#id_musica_favorita'),
       cor_fundo: $('#id_cor_fundo'),
       cor_texto: $('#id_cor_texto'),
       cor_destaque: $('#id_cor_destaque'),
       foto: $('#id_foto'),
     };
 
-    const hobbiesSelect = $('#id_hobbies');
-    const hobbyCheckboxes = document.querySelectorAll('input[name="hobbies"]');
+    // Hobbies
+    const hobbiesContainer = $('#hobbies-container'); // contém o widget renderizado pelo Django (oculto)
+    const hobbiesModal = $('#hobbies-modal');
+    const hobbiesModalBody = $('#hobbies-modal-body');
+    const hobbiesBtn = $('#hobbies-btn');
+    const hobbiesSave = $('#hobbies-save');
+    const hobbiesCancel = $('#hobbies-cancel');
+    const hobbiesBadge = $('#hobbies-badge');
 
+    // preview elementos
     const previewCard = $('#preview-card');
     const previewRoot = $('#preview-root');
     const previewCloneAnchor = $('#preview-clone-anchor');
@@ -264,16 +336,19 @@
     const previewImage = $('#preview-image');
     const previewImageFallback = $('#preview-image-fallback');
     const previewFallbackIcon = $('#preview-fallback-icon');
+    const previewMusica = $('#preview-musica');
     const fileNameSpan = $('#file-name');
 
-    // Mapeamento de fontes (valores do select -> família)
-    const FONT_MAP = {
-      '1': "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
-      '2': "Oswald, sans-serif",
-      '3': "'DM Serif Display', serif",
-      '4': "'Playwrite', serif",
-      '5': "Abel, sans-serif",
-      '8': "Poppins, sans-serif"
+    // Mapeamento de fontes (valores do select -> classe CSS já presente no seu projeto)
+    const FONT_CLASS_MAP = {
+      '1': "font-inter",
+      '2': "font-oswald",
+      '3': "font-dm-serif",
+      '4': "font-playwrite",
+      '5': "font-abel",
+      '6': "font-dancing-script",
+      '7': "font-shadows-into-light",
+      '8': "font-poppins"
     };
 
     function hexToRgba(hex, a) {
@@ -288,13 +363,12 @@
     // lê hobbies usando texto (option text ou label text)
     function readHobbies() {
       const out = [];
-      if (hobbiesSelect && hobbiesSelect.multiple) {
-        Array.from(hobbiesSelect.selectedOptions).forEach(o => out.push(o.textContent.trim()));
-        return out;
-      }
-      if (hobbyCheckboxes && hobbyCheckboxes.length) {
-        hobbyCheckboxes.forEach(cb => {
+      // procura inputs do tipo checkbox/radio com name contendo "hobbies" dentro do form
+      const boxes = document.querySelectorAll('#card-form input[name^="hobbies"]');
+      if (boxes && boxes.length) {
+        boxes.forEach(cb => {
           if (!cb.checked) return;
+          // tenta texto do label associado
           if (cb.id) {
             const lab = document.querySelector(`label[for="${cb.id}"]`);
             if (lab && lab.textContent.trim()) { out.push(lab.textContent.trim()); return; }
@@ -304,15 +378,27 @@
         });
         return out;
       }
-      // fallback
-      const containerChecks = document.querySelectorAll('#hobbies-container input[type="checkbox"]');
-      containerChecks.forEach(cb => {
-        if (cb.checked) {
-          const lab = cb.id ? document.querySelector(`label[for="${cb.id}"]`) : null;
-          out.push(lab ? lab.textContent.trim() : (cb.value || 'Hobby'));
-        }
-      });
+
+      // fallback para select múltiplo
+      const sel = document.querySelector('#card-form select[name="hobbies"]');
+      if (sel && sel.multiple) {
+        Array.from(sel.selectedOptions).forEach(o => out.push(o.textContent.trim()));
+        return out;
+      }
+
       return out;
+    }
+
+    // atualiza texto/badge do botão de hobbies
+    function updateHobbiesButton() {
+      const hs = readHobbies();
+      if (!hs || hs.length === 0) {
+        hobbiesBadge.textContent = 'Nenhum';
+      } else if (hs.length <= 3) {
+        hobbiesBadge.textContent = hs.join(', ');
+      } else {
+        hobbiesBadge.textContent = hs.length + ' selecionados';
+      }
     }
 
     // pega texto do option selecionado (se for select)
@@ -329,27 +415,25 @@
     function updatePreview() {
       if (!previewCard) return;
 
-      // NOME (aplica fonte especial apenas no nome)
+      // NOME
       const nomeVal = (inputs.nome?.value || 'Nome').trim();
       previewNome.textContent = nomeVal;
 
-      // Ajustar fonte: nome com fonte selecionada; resto com Inter
+      // Fontes: agora aplicamos classes (usa classes definidas no seu CSS/Tailwind)
       const fonteVal = inputs.fonte?.value || '1';
-      const nomeFamily = FONT_MAP[fonteVal] || FONT_MAP['1'];
-      const defaultFamily = FONT_MAP['1'];
-      // aplica família base Inter ao card
-      previewCard.style.fontFamily = defaultFamily;
-      // aplica família especial só no nome
-      previewNome.style.fontFamily = nomeFamily;
+      const fontClass = FONT_CLASS_MAP[fonteVal] || FONT_CLASS_MAP['1'];
+
+      // rebuild class list do h2 mantendo estilos visuais
+      previewNome.className = `${fontClass} font-semibold text-2xl mb-0 px-2 py-1 bg-black/10 rounded whitespace-nowrap flex gap-2 w-fit`;
 
       // Instagram
       const instaVal = (inputs.insta?.value || '').trim();
       previewInsta.textContent = instaVal ? '@' + instaVal.replace(/^@+/, '') : '';
 
       // Idade
-      previewIdade.textContent = inputs.idade?.value ? `${inputs.idade.value} anos` : '';
+      previewIdade.textContent = inputs.idade?.value ? `${inputs.idade.value} anos` : '0 anos';
 
-      // Período / curso -> pega texto das options
+      // Período / curso
       const periodoText = selectedOptionText(inputs.periodo) || '';
       const cursoText = selectedOptionText(inputs.curso) || '';
       if (inputs.periodo && inputs.periodo.value && inputs.periodo.value !== '5') {
@@ -361,7 +445,10 @@
       // Bio
       previewBio.textContent = inputs.bio?.value || '';
 
-      // Hobbies (usa texto)
+      // Música favorita
+      previewMusica.innerHTML = `<i class="bi bi-music-note-beamed animate-pulse"></i> Música favorita: ${inputs.musica?.value || '—'}`;
+
+      // Hobbies
       const hobbies = readHobbies();
       previewHobbies.innerHTML = '';
       if (hobbies.length === 0) {
@@ -380,25 +467,34 @@
       const corTexto = inputs.cor_texto?.value || '#FFFFFF';
       const corDestaque = inputs.cor_destaque?.value || '#60a5fa';
 
-      previewCard.style.background = hexToRgba(corFundo, 0.12); // equivalente a /20
+      // background com 20% (0.2)
+      previewCard.style.background = hexToRgba(corFundo, 0.2);
       previewCard.style.border = `2px solid ${corDestaque}`;
       previewCard.style.color = corTexto;
-      // icone fallback com opacidade do fundo
+
       if (previewFallbackIcon) {
         previewFallbackIcon.style.color = hexToRgba(corFundo, 0.5);
       }
-      // aplica destaque aos hobbies e ao nome/idade se desejar
       previewNome.style.color = corDestaque;
       previewIdade.style.color = corDestaque;
+
+      // aplicar cor de destaque aos chips
       $all('#preview-hobbies span').forEach(el => { el.style.backgroundColor = corDestaque; el.style.color = '#000'; });
 
-      // forçar que o texto que possa ter style inline use cor correta (pouco provável, mas garantido)
-      $all('#preview-card *').forEach(node => {
-        if (!node.style) return;
-        // não sobrescrever a cor do nome (já feito)
-        if (node.id === 'preview-nome') return;
-        node.style.color = corTexto;
-      });
+      // --- CORREÇÃO APLICADA ---
+      // Aplicar cores corretas explicitamente em vez do loop genérico
+
+      // Música deve ter cor_destaque
+      previewMusica.style.color = corDestaque;
+
+      // Estes devem ter cor_texto
+      previewPeriodoCurso.style.color = corTexto;
+      previewBio.style.color = corTexto;
+      previewInsta.style.color = corTexto;
+      previewInsta.style.opacity = 0.8; // Manter opacidade do HTML original
+
+      // atualizar badge do botão
+      updateHobbiesButton();
     }
 
     // imagem
@@ -429,7 +525,57 @@
       }
     }
 
-    // attach events (ajuste IDs se necessário)
+    // ------- modal hobbies: mover inputs para modal e abrir/fechar -------
+    function openHobbiesModal() {
+      // mover nós do container oculto pro modal body (se ainda não movemos)
+      if (hobbiesContainer && hobbiesModalBody && hobbiesContainer.children.length) {
+        // move enquanto houver nós
+        while (hobbiesContainer.children.length) {
+          hobbiesModalBody.appendChild(hobbiesContainer.children[0]);
+        }
+      }
+      // ativar modal e focar
+      hobbiesModal.classList.add('active');
+      hobbiesModal.setAttribute('aria-hidden', 'false');
+      hobbiesBtn.setAttribute('aria-expanded', 'true');
+      document.documentElement.style.overflow = 'hidden'; // evitar scroll do body
+      // adicionar listeners nos inputs movidos para atualizar o preview
+      attachHobbyChangeListeners();
+    }
+
+    function closeHobbiesModal(moveBack = true) {
+      // Se moveBack = true, retorna os inputs para container original (oculto)
+      if (moveBack && hobbiesModalBody && hobbiesContainer) {
+        while (hobbiesModalBody.children.length) {
+          hobbiesContainer.appendChild(hobbiesModalBody.children[0]);
+        }
+      }
+      hobbiesModal.classList.remove('active');
+      hobbiesModal.setAttribute('aria-hidden', 'true');
+      hobbiesBtn.setAttribute('aria-expanded', 'false');
+      document.documentElement.style.overflow = ''; // restaura scroll
+      // atualizar preview/botão
+      updatePreview();
+    }
+
+    function attachHobbyChangeListeners() {
+      // liga listener a todos os inputs de hobbies dentro do form
+      const boxes = document.querySelectorAll('#card-form input[name^="hobbies"]');
+      boxes.forEach(cb => {
+        // evitar duplicar listeners: remove antes
+        cb.removeEventListener('change', updatePreview);
+        cb.addEventListener('change', updatePreview);
+      });
+    }
+
+    // eventos modal
+    if (hobbiesBtn) hobbiesBtn.addEventListener('click', openHobbiesModal);
+    if (hobbiesCancel) hobbiesCancel.addEventListener('click', () => closeHobbiesModal(true));
+    if (hobbiesSave) hobbiesSave.addEventListener('click', () => closeHobbiesModal(true));
+    // fechar clicando no overlay
+    document.querySelectorAll('[data-close-modal]').forEach(el => el.addEventListener('click', () => closeHobbiesModal(true)));
+
+    // Attach events (ajuste IDs se necessário)
     Object.values(inputs).forEach(inp => {
       if (!inp) return;
       const ev = (inp.type === 'color' || inp.tagName === 'SELECT') ? 'change' : 'input';
@@ -437,18 +583,25 @@
     });
     if (inputs.foto) inputs.foto.addEventListener('change', (e) => { handleFileChange(e); updatePreview(); });
 
-    if (hobbiesSelect) hobbiesSelect.addEventListener('change', updatePreview);
-    if (hobbyCheckboxes && hobbyCheckboxes.length) hobbyCheckboxes.forEach(cb => cb.addEventListener('change', updatePreview));
-    document.addEventListener('change', (e) => { if (e.target && e.target.name === 'hobbies') updatePreview(); });
+    // Também observar qualquer mudança geral em inputs de hobbies (caso sejam select múltiplo)
+    document.addEventListener('change', (e) => {
+      if (!e.target) return;
+      const t = e.target;
+      if (t.name && t.name.startsWith('hobbies')) {
+        updatePreview();
+      }
+    });
 
     window.addEventListener('resize', relocatePreview);
 
-    // inicializa
+    // inicializa: move preview conforme largura e atualiza preview + badge
     updatePreview();
     relocatePreview();
+    // garantir que badge esteja correto na carga
+    updateHobbiesButton();
 
     // debug
-    window.__cardPreview = { updatePreview, relocatePreview, handleFileChange };
+    window.__cardPreview = { updatePreview, relocatePreview, handleFileChange, openHobbiesModal, closeHobbiesModal };
 
   })();
 </script>

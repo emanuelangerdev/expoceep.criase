@@ -7,6 +7,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{% block title %}Crie-se{% endblock %} - Projeto ExpoCEEP</title>
 
+  <!-- Favicon -->
+  <link rel="icon" href="{% static 'img/logohttps.png' %}" type="image/png">
+
   <!-- Fonte -->
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -91,10 +94,10 @@
     <!-- Footer do Site -->
     <footer class="mt-auto">
       <div class="footer-content">
-        <a href="">
+        <a href="{% url 'sobre' %}">
           <h1>Sobre</h1>
         </a>
-        <a href="">
+        <a href="{% url 'info' %}">
           <h1>Informações</h1>
         </a>
       </div>

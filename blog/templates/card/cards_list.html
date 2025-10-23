@@ -3,6 +3,42 @@
 {% block title %} Lista de Cards {% endblock %}
 {% block content %}
 
+<style>
+  #card-modal-overlay.hidden { display: none; }
+#card-modal-overlay { display:flex; }
+
+/* animação/backdrop já existentes */
+#card-modal-backdrop { pointer-events: none; }
+#card-modal-overlay.show #card-modal-backdrop { opacity: 1; pointer-events: auto; }
+#card-modal-wrapper { will-change: transform, opacity; }
+#card-modal-overlay.show #card-modal-wrapper { transform: scale(1); opacity: 1; }
+
+/* Wrapper com fundo escuro por trás do clone — APENAS no modal */
+.modal-card-bg {
+  background: linear-gradient(180deg, rgba(6,6,6,0.98), rgba(24,24,24,0.98));
+  padding: 18px;
+  border-radius: 12px;
+  box-shadow: 0 18px 50px rgba(0,0,0,0.6);
+  display: inline-block; /* evita esticar horizontalmente além do conteúdo */
+}
+
+/* garante que o clone do card possa crescer verticalmente sem limite
+   (aplica-se somente ao clone dentro do modal) */
+.card-clone {
+  height: auto !important;
+  max-height: none !important;     /* sem limite */
+  overflow: visible !important;
+}
+
+/* remove truncagem de linhas somente no clone dentro do modal */
+.card-clone .line-clamp-3 {
+  -webkit-line-clamp: unset !important;
+  overflow: visible !important;
+  display: block !important;
+}
+</style>
+
+
 <script>
     // URLs dinâmicas para o JavaScript
     const URL_COMENTARIOS_LIST = "{% url 'comentarios-list' %}";
@@ -16,7 +52,7 @@
   {% if cards %}
   <div class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
     {% for card in cards %}
-    <article class="bg-[{{ card.cor_fundo }}]/20 border h-[550px] border-[{{ card.cor_destaque }}] rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition flex flex-col
+    <article id="card-{{ card.id }}" class="bg-[{{ card.cor_fundo }}]/20 border h-[550px] border-[{{ card.cor_destaque }}] rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition flex flex-col
                     transition-transform hover:scale-[1.01] duration-200">
       {% if card.foto %}
       <img src="{{ card.foto.url }}" alt="{{ card.nome|default:'Card' }}" style="height: 200px !important" class="w-[90%] mx-auto h-[200px] rounded object-cover mt-4">
@@ -70,15 +106,24 @@
             {% endfor %}
           </div>
 
-           <p class="text-sm mb-3 overflow-hidden text-ellipsis line-clamp-3" 
+           <p class="text-sm mb-3 overflow-hidden text-ellipsis line-clamp-" 
              style="color: {{ card.cor_texto }};">
             {{ card.bio }}
+          </p>
+
+          <p class="text-sm font-semibold flex gap-2" style="color: {{ card.cor_destaque }};">
+            <i class="bi bi-music-note-beamed animate-pulse"></i> Música favorita: {{ card.musica_favorita }}
           </p>
         </div>
         
         <!-- Seção fixa no rodapé do card -->
         <div class="flex items-center text-sm mt-auto pt-4 border-t border-gray-300/30">
-          <button class="text-white gap-2 bg-blue-600/50 border border-blue-600 px-2 py-1 rounded transition-300 hover:bg-blue-600 hover:shadow">
+          <button
+            class="ver-btn text-white gap-2 bg-blue-600/50 border border-blue-600 px-2 py-1 rounded transition-300 hover:bg-blue-600 hover:shadow"
+            data-card-id="{{ card.id }}"
+            aria-haspopup="dialog"
+            aria-controls="card-modal"
+          >
             <i class="bi bi-eye"></i> Ver
           </button>
           
@@ -98,7 +143,7 @@
           <button class="btn-curtir like-btn ml-auto transition-300 hover:bg-red-600/50" data-card-id="{{ card.id }}" aria-label="Curtir" aria-pressed="false">
 
             <i class="bi bi-heart heart-outline" aria-hidden="true"></i>
-            <i class="bi bi-heart-fill heart-fill" aria-hidden="true"></i>
+            <i class="bi bi-heart-fill heart-fill animate-pulse" aria-hidden="true"></i>
 
             <span class="curtidas-count">{{ card.curtidas|default:0 }}</span>
           </button>
@@ -182,6 +227,186 @@
     </div>
   </div>
 </div>
+
+
+<!-- === MODAL VISUAL DO CARD (cole no final do template) === -->
+<!-- Overlay / container -->
+<div id="card-modal-overlay" class="hidden fixed inset-0 z-[2000] flex items-center justify-center p-4">
+  <div id="card-modal-backdrop" class="absolute inset-0 bg-black/75 opacity-0 transition-opacity duration-220"></div>
+
+  <div id="card-modal-wrapper" class="relative transform scale-95 opacity-0 transition-all duration-220 ease-out">
+    <div id="card-modal-close" class="absolute -top-3 -right-3 z-10">
+      <button aria-label="Fechar" class="rounded-full bg-red-600 text-white px-3 py-1 shadow">✕</button>
+    </div>
+    <div id="card-modal-content" class="max-h-[90vh] overflow-auto"></div>
+  </div>
+</div>
+
+<style>
+  /* posição/visibilidade */
+  #card-modal-overlay.hidden { display: none; }
+  #card-modal-overlay { display:flex; }
+
+  /* animação */
+  #card-modal-backdrop { pointer-events: none; }
+  #card-modal-overlay.show #card-modal-backdrop { opacity: 1; pointer-events: auto; }
+  #card-modal-wrapper { will-change: transform, opacity; }
+  #card-modal-overlay.show #card-modal-wrapper { transform: scale(1); opacity: 1; }
+
+  /* garante que o clone se possa expandir verticalmente */
+  .card-clone { height: auto !important; max-height: 90vh; overflow: auto; }
+
+  /* remove truncagem de linhas no clone (caso haja) */
+  .card-clone .line-clamp-3 {
+    -webkit-line-clamp: unset !important;
+    overflow: visible !important;
+    display: block !important;
+  }
+
+  /* Ajuste de responsividade: mantém width do card conforme original (aplicado inline também) */
+</style>
+
+<script>
+(function(){
+  const overlay = document.getElementById('card-modal-overlay');
+  const wrapper = document.getElementById('card-modal-wrapper');
+  const backdrop = document.getElementById('card-modal-backdrop');
+  const content = document.getElementById('card-modal-content');
+  const closeBtn = document.querySelector('#card-modal-close button');
+
+  // abre modal: clona visualmente o card e remove classes de altura fixa
+  function openModalWithCard(originalCardEl, cardId) {
+  // limpa conteúdo anterior
+  content.innerHTML = '';
+
+  // calcula largura atual do card original (para manter proporção visual)
+  const rect = originalCardEl.getBoundingClientRect();
+  const cardWidth = Math.round(rect.width);
+
+  // clone visual
+  const clone = originalCardEl.cloneNode(true);
+  clone.classList.add('card-clone');
+
+  // remove classes de altura fixa no clone (ex.: h-[550px] do Tailwind), se houver
+  Array.from(clone.classList).forEach(c => {
+    if (/^h-\[.+\]$/.test(c) || /^h-\d+/.test(c)) {
+      clone.classList.remove(c);
+    }
+  });
+
+  // remove line-clamp no clone (quando existir)
+  clone.querySelectorAll('.line-clamp-3').forEach(el => el.classList.remove('line-clamp-3'));
+
+  // ---- AQUI: removendo elementos interativos do clone ----
+  // ajuste os seletores conforme seus nomes de classes/IDs reais
+  const selectorsToRemove = [
+    'button',                // remove todos os <button>
+    'a.btn-comentarios',     // links/botões de comentário (se forem <a>)
+    '.btn-comentarios',      // botão comentários
+    '.ver-btn',              // botão ver
+    '.like-btn',             // botão curtir
+    '.publicar',             // botão publicar dentro do form (caso exista)
+    'textarea',              // remove textarea (caso haja)
+    'input[type="hidden"]',  // inputs escondidos específicos (se quiser)
+    '.curtidas-count'        // contador de curtidas (se quiser remover visual)
+  ];
+  // percorre e remove nós que existam
+  clone.querySelectorAll(selectorsToRemove.join(',')).forEach(el => {
+    // se quiser apenas esconder ao invés de remover, troque por:
+    // el.style.display = 'none';
+    el.remove();
+  });
+  // --------------------------------------------------------
+
+  // forçar altura automática no clone e largura igual ao original
+  clone.style.height = 'auto';
+  clone.style.maxHeight = 'none';      // sem limite vertical
+  clone.style.overflow = 'visible';
+  clone.style.width = cardWidth + 'px';
+  clone.style.maxWidth = 'calc(100vw - 48px)';
+
+  // cria um container escuro POR TRÁS do clone (APENAS dentro do modal)
+  const wrapper = document.createElement('div');
+  wrapper.className = 'modal-card-bg';
+  wrapper.appendChild(clone);
+
+  // insere wrapper no modal
+  content.appendChild(wrapper);
+
+  // mostra overlay com animação
+  overlay.classList.remove('hidden');
+  requestAnimationFrame(() => overlay.classList.add('show'));
+
+  // foco acessível
+  closeBtn.focus();
+}
+
+
+
+  function closeModal() {
+    overlay.classList.remove('show');
+    // aguarda a animação terminar, então esconde
+    setTimeout(() => {
+      overlay.classList.add('hidden');
+      content.innerHTML = '';
+    }, 220);
+  }
+
+  // delegação: clique em um botão "Ver" (ou em qualquer elemento com data-card-id dentro de um card)
+  document.addEventListener('click', function(e){
+    const btn = e.target.closest('[data-card-id][aria-haspopup="dialog"], .ver-btn, [data-open-card-id]');
+    if (!btn) return;
+
+    // determina card id (prioriza dataset)
+    const cardId = btn.dataset.cardId || btn.dataset.openCardId || null;
+    if (!cardId) return;
+
+    // tenta achar o card original: pega primeiro elemento na página que tenha um botão com o mesmo data-card-id e sobe até o article/elemento mais próximo
+    const anyBtn = document.querySelector(`[data-card-id="${cardId}"]`);
+    if (!anyBtn) return;
+    const originalCard = anyBtn.closest('article') || anyBtn.closest('div') || anyBtn.parentElement;
+    if (!originalCard) return;
+
+    e.preventDefault();
+    openModalWithCard(originalCard, cardId);
+  });
+
+  // encaminhar cliques do clone para o card original quando fizer sentido
+  // assim preservamos o comportamento de curtidas/comentários sem precisar copiar listeners
+  content.addEventListener('click', function(e){
+    // procura botão alvo dentro do clone
+    const clickable = e.target.closest('button, a, [data-card-id], .btn-comentarios, .like-btn, .publicar');
+    if (!clickable) return;
+
+    // tenta obter o card id a partir do elemento clicado (pode estar no próprio elemento ou em um filho)
+    const cardId = clickable.dataset.cardId || clickable.closest('[data-card-id]')?.dataset.cardId;
+    if (!cardId) return;
+
+    // encontra o elemento original correspondente (na página principal)
+    const originalTarget = document.querySelector(`[data-card-id="${cardId}"]`);
+    if (!originalTarget) return;
+
+    // evita que clicks em links do clone naveguem; encaminha a ação ao original
+    e.preventDefault();
+    // dispara click no original (isso deve ativar seu JS de curtidas/comentários que está atrelado ao original)
+    originalTarget.click();
+  });
+
+  // fechar com o botão, clique no backdrop ou ESC
+  closeBtn.addEventListener('click', closeModal);
+  backdrop.addEventListener('click', closeModal);
+  overlay.addEventListener('mousedown', function(e){
+    if (e.target === overlay) closeModal();
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && !overlay.classList.contains('hidden')) {
+      closeModal();
+    }
+  });
+
+})();
+</script>
+
 
 <script src="{% static 'javascript/comentarios.js' %}"></script>
 {% endblock %}

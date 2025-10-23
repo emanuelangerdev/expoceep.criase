@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import new_card, cards_list, index
 from .views import comentarios_list, new_comentario, like_card
+from .views import sobre, info
 
 
 urlpatterns = [
@@ -17,4 +18,7 @@ urlpatterns = [
 
     # Curtidas (likes)
     path("cards/curtir/<int:card_id>/", like_card, name="like-card"),
+    
+    path('sobre/', sobre, name="sobre"),
+    path('info/', info, name="info"),
 ]                                                                      

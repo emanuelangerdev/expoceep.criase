@@ -40,10 +40,13 @@ html {
 body {
   margin: 0;
   font-family: Inter, system-ui, sans-serif;
+  background-repeat: no-repeat;
+  background-size: cover;
   background-image: url('../img/background.png');     /* Backgrond */
   color: #ececec;                 /* Texto principal */
   line-height: 1.6;
 }
+
 
 .Poppins {
   font-family: "poppins", sans-serif;

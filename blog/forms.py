@@ -11,7 +11,7 @@ class CardForm(forms.ModelForm):
             'idade': forms.NumberInput(attrs={'min': 0, 'max': 120}),
             'hobbies': forms.CheckboxSelectMultiple(),
             'bio': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Uma bio curta (máx. 500 caracteres)'}),
-            'musica_fav': forms.TextInput(attrs={'placeholder': 'Música favorita'}),
+            'musica_favorita': forms.TextInput(attrs={'placeholder': 'Música favorita'}),
             'cor_fundo': forms.TextInput(attrs={'type': 'color'}),
             'cor_destaque': forms.TextInput(attrs={'type': 'color'}),
             'gradiente': forms.CheckboxInput(),
@@ -21,7 +21,7 @@ class CardForm(forms.ModelForm):
             'curso': forms.Select(),
         }
         labels = {
-            'musica_fav': 'Música favorita',
+            'musica_favorita': 'Música favorita',
             'cor_fundo': 'Cor de fundo do card',
             'cor_texto': 'Cor do texto do card'
         }

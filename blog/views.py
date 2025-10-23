@@ -139,3 +139,10 @@ def like_card(request, card_id):
         logger.exception("Erro ao processar like para card %s", card_id)
         # Retorna a mensagem para debugging (remova em produção)
         return JsonResponse({'success': False, 'error': f'Erro interno ao processar like: {str(e)}'}, status=500)
+    
+    
+def sobre(request):
+    return render(request, 'card/new_sobre.html')
+
+def info(request):
+    return render(request, 'card/new_info.html')
