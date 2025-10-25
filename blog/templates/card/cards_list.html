@@ -7,6 +7,37 @@
   #card-modal-overlay.hidden { display: none; }
 #card-modal-overlay { display:flex; }
 
+.scrollbar-minimal {
+  scrollbar-width: thin;          /* Firefox */
+  scrollbar-color: #4a90e2 #1e293b; /* polegar / track no Firefox */
+}
+.scrollbar-minimal::-webkit-scrollbar {
+  width: 4px;
+}
+.scrollbar-minimal::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 9999px;
+}
+/* Chrome, Edge, Safari */
+.scrollbar-minimal::-webkit-scrollbar {
+  width: 6px;  /* largura da barra */
+}
+
+.scrollbar-minimal::-webkit-scrollbar-track {
+  background: #1e293b; /* cor do fundo da track */
+  border-radius: 10px;
+}
+
+.scrollbar-minimal::-webkit-scrollbar-thumb {
+  background-color: #4a90e2; /* cor do polegar */
+  border-radius: 10px;
+  border: 2px solid #1e293b; /* cria um espaçamento interno */
+}
+
+.scrollbar-minimal::-webkit-scrollbar-thumb:hover {
+  background-color: #3573c6; /* leve destaque no hover */
+}
+
 /* animação/backdrop já existentes */
 #card-modal-backdrop { pointer-events: none; }
 #card-modal-overlay.show #card-modal-backdrop { opacity: 1; pointer-events: auto; }
@@ -63,7 +94,7 @@
       </div>
       {% endif %}
       
-      <div class="p-4 flex flex-col flex-grow">
+      <div class="p-4 flex flex-col flex-grow overflow-y-auto p-4 scrollbar-minimal">
         <div class="flex-grow">
 
           <div class="flex gap-2">
@@ -117,7 +148,7 @@
         </div>
         
         <!-- Seção fixa no rodapé do card -->
-        <div class="flex items-center text-sm mt-auto pt-4 border-t border-gray-300/30">
+        <div class="flex items-center text-sm mt-auto pt-4 border-t border-gray-300/30  flex-shrink-0">
           <button
             class="ver-btn text-white gap-2 bg-blue-600/50 border border-blue-600 px-2 py-1 rounded transition-300 hover:bg-blue-600 hover:shadow"
             data-card-id="{{ card.id }}"
